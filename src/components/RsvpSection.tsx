@@ -1,0 +1,404 @@
+import React, { useState } from 'react';
+import { CheckCircle2, AlertCircle, Send, Users, ShieldCheck, RefreshCw, CalendarCheck } from 'lucide-react';
+import { InvitationConfig } from '../config/invitationContent';
+import { AttendanceStatus, validateRsvpInput } from '../utils/validation';
+
+interface RsvpSectionProps {
+  config: InvitationConfig;
+}
+
+interface SubmitResponse {
+  success: boolean;
+  isMock?: boolean;
+  notice?: string;
+  isUpdated?: boolean;
+  message?: string;
+  error?: string;
+  errors?: Record<string, string>;
+  rsvpId?: string;
+}
+
+export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
+  const { rsvp, event } = config;
+
+  // Form State
+  const [guestName, setGuestName] = useState('');
+  const [attendance, setAttendance] = useState<AttendanceStatus>('yes');
+  const [partySize, setPartySize] = useState<number>(1);
+  const [phone, setPhone] = useState('');
+  const [message, setMessage] = useState('');
+  const [honeypot, setHoneypot] = useState(''); // Website spam honeypot
+
+  // UI State
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitResult, setSubmitResult] = useState<SubmitResponse | null>(null);
+  const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
+
+  if (!rsvp.enabled) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setClientErrors({});
+
+    // 1. Client-side validation
+    const validation = validateRsvpInput(
+      {
+        eventId: event.id,
+        guestName,
+        attendance,
+        partySize: attendance === 'no' ? 0 : partySize,
+        phone,
+        message,
+        website: honeypot,
+      },
+      {
+        requirePhone: rsvp.requirePhone,
+        maxPartySize: rsvp.maxPartySize,
+      }
+    );
+
+    if (!validation.isValid) {
+      setClientErrors(validation.errors);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitResult(null);
+
+    try {
+      // 2. Gửi request đến Cloudflare Pages Function /api/rsvp thực tế
+      const res = await fetch('/api/rsvp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventId: event.id,
+          guestName,
+          attendance,
+          partySize: attendance === 'no' ? 0 : partySize,
+          phone: phone.trim() ? phone.trim() : undefined,
+          message: message.trim() ? message.trim() : undefined,
+          website: honeypot,
+        }),
+      });
+
+      const data: SubmitResponse = await res.json();
+
+      if (!res.ok || !data.success) {
+        if (data.errors) {
+          setClientErrors(data.errors);
+        } else {
+          setSubmitResult({
+            success: false,
+            error: data.error || 'Có lỗi xảy ra trong quá trình ghi nhận. Vui lòng thử lại.',
+          });
+        }
+      } else {
+        setSubmitResult(data);
+      }
+    } catch {
+      setSubmitResult({
+        success: false,
+        error: 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng và thử lại.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleResetForEdit = () => {
+    setSubmitResult(null);
+  };
+
+  return (
+    <section
+      id="rsvp"
+      tabIndex={-1}
+      aria-label="Xác nhận tham dự sự kiện khai trương"
+      className="py-12 px-5 sm:px-8 max-w-3xl mx-auto font-sans outline-none focus:outline-none"
+    >
+      <div className="text-center mb-8">
+        <span className="text-xs uppercase tracking-widest text-[#FF6403] font-bold">
+          Đón Tiếp Chu Đáo
+        </span>
+        <h2 className="font-sans text-2xl sm:text-3xl font-bold mt-1 tracking-tight text-[#002782]">
+          Xác Nhận Tham Dự (RSVP)
+        </h2>
+        <div className="w-12 h-1 bg-[#FF6403] rounded-full mx-auto mt-3" />
+        {rsvp.deadline && (
+          <p className="text-xs sm:text-sm text-[#64748B] mt-2 font-medium">
+            Hạn phản hồi: {rsvp.deadline}
+          </p>
+        )}
+      </div>
+
+      <div className="p-6 sm:p-10 rounded-3xl transition-all shadow-invitation bg-white border border-[#002782]/10 text-[#0F172A]">
+        {submitResult?.success ? (
+          /* Trạng thái thành công */
+          <div className="text-center py-6 space-y-4">
+            <div className="w-16 h-16 bg-[#F0F7E6] text-[#609900] rounded-full flex items-center justify-center mx-auto mb-2 animate-bounce">
+              <CalendarCheck className="w-8 h-8 text-[#05681E]" />
+            </div>
+
+            <h3 className="font-sans text-2xl font-bold text-[#05681E]">
+              {submitResult.isUpdated ? 'Cập Nhật Phản Hồi Thành Công!' : 'Xác Nhận Thành Công!'}
+            </h3>
+
+            <p className="text-sm sm:text-base text-[#334155] max-w-md mx-auto leading-relaxed">
+              Cảm ơn <strong>{guestName}</strong> đã gửi phản hồi.
+              {attendance === 'yes' && ' Mekong Meris rất vinh hạnh và mong chờ được đón tiếp Quý khách cùng người thân!'}
+              {attendance === 'maybe' && ' Mekong Meris sẽ lưu ý và chuẩn bị chu đáo để đón tiếp khi Quý khách có thể sắp xếp tham gia.'}
+              {attendance === 'no' && ' Rất tiếc khi Quý khách không thể tham dự lần này. Mekong Meris hy vọng sẽ có dịp đón tiếp Quý khách trong những dịp gần nhất!'}
+            </p>
+
+            {/* Thông báo Mock Mode nếu chưa kết nối Atlas thật */}
+            {submitResult.isMock && (
+              <div className="p-3 bg-amber-50 rounded-2xl border border-amber-300 text-amber-900 text-xs text-left">
+                <div className="font-bold flex items-center gap-1.5 mb-1">
+                  <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span>LƯU Ý DÀNH CHO NHÀ PHÁT TRIỂN / XEM TRƯỚC:</span>
+                </div>
+                <p>{submitResult.notice}</p>
+                <p className="mt-1 opacity-80">
+                  (Dữ liệu chưa ghi vào MongoDB Atlas thực tế do chưa thiết lập Wrangler secret MONGODB_URI)
+                </p>
+              </div>
+            )}
+
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={handleResetForEdit}
+                className="inline-flex items-center gap-2 text-xs font-bold px-5 py-3 rounded-xl border border-[#002782]/20 text-[#002782] hover:bg-[#002782]/5 transition-all"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Thay đổi câu trả lời</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* Biểu mẫu RSVP */
+          <form onSubmit={handleSubmit} noValidate className="space-y-6">
+            {/* Honeypot Spam Protection (ẩn hoàn toàn với người dùng) */}
+            <div className="hidden" aria-hidden="true">
+              <label htmlFor="website-hp">Website</label>
+              <input
+                id="website-hp"
+                type="text"
+                name="website"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
+
+            {/* Thông báo lỗi tổng quát */}
+            {submitResult?.error && (
+              <div
+                role="alert"
+                className="p-3 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm flex items-start gap-2.5"
+              >
+                <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <span className="font-bold">Chưa thể gửi phản hồi:</span>
+                  <p className="mt-0.5">{submitResult.error}</p>
+                </div>
+              </div>
+            )}
+
+            {/* 1. Tên khách mời */}
+            <div>
+              <label
+                htmlFor="guestName"
+                className="block text-xs sm:text-sm font-bold text-[#002782] mb-1.5"
+              >
+                Họ và Tên của Quý khách <span className="text-[#FF6403]">*</span>
+              </label>
+              <input
+                id="guestName"
+                type="text"
+                value={guestName}
+                onChange={(e) => setGuestName(e.target.value)}
+                placeholder="Ví dụ: Nguyễn Văn A"
+                maxLength={100}
+                required
+                className={`w-full px-4 py-3.5 rounded-2xl text-sm transition-all border outline-none font-medium focus:ring-2 ${
+                  clientErrors.guestName
+                    ? 'border-red-400 bg-red-50/50 focus:ring-red-400'
+                    : 'border-[#CBD5E1] bg-[#F8FAFC] focus:border-[#002782] focus:ring-[#3EAFE8]/40'
+                }`}
+              />
+              {clientErrors.guestName && (
+                <p className="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-medium">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>{clientErrors.guestName}</span>
+                </p>
+              )}
+            </div>
+
+            {/* 2. Trạng thái tham dự */}
+            <div>
+              <span className="block text-xs sm:text-sm font-bold text-[#002782] mb-2">
+                Quý khách có thể tham dự cùng chúng tôi không? <span className="text-[#FF6403]">*</span>
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {[
+                  { id: 'yes', label: 'Tham dự', desc: 'Sẽ có mặt chung vui' },
+                  ...(rsvp.allowMaybe ? [{ id: 'maybe', label: 'Chưa chắc', desc: 'Cố gắng sắp xếp' }] : []),
+                  { id: 'no', label: 'Không tham dự', desc: 'Gửi lời chúc mừng' },
+                ].map((opt) => {
+                  const selected = attendance === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setAttendance(opt.id as AttendanceStatus)}
+                      className={`p-3.5 rounded-2xl text-left border transition-all flex flex-col justify-between min-h-[58px] focus:outline-none focus:ring-2 ${
+                        selected
+                          ? 'border-[#002782] bg-[#002782]/5 ring-2 ring-[#002782]/20'
+                          : 'border-[#E2E8F0] hover:bg-[#F8FAFC]'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-sm font-bold text-[#002782]">{opt.label}</span>
+                        {selected && (
+                          <CheckCircle2 className="w-4 h-4 text-[#002782]" />
+                        )}
+                      </div>
+                      <span className="text-[11px] text-[#64748B] mt-1">{opt.desc}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              {clientErrors.attendance && (
+                <p className="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-medium">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>{clientErrors.attendance}</span>
+                </p>
+              )}
+            </div>
+
+            {/* 3. Số lượng người tham dự (Chỉ hiện khi chọn Có hoặc Chưa chắc) */}
+            {attendance !== 'no' && (
+              <div className="p-4 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label
+                      htmlFor="partySize"
+                      className="block text-xs sm:text-sm font-bold text-[#002782] flex items-center gap-1.5"
+                    >
+                      <Users className="w-4 h-4 text-[#002782]" />
+                      <span>Tổng số người tham dự (gồm Quý khách)</span>
+                    </label>
+                    <span className="text-[11px] text-[#64748B]">
+                      Tối đa {rsvp.maxPartySize} người để đảm bảo chỗ ngồi chu đáo
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <select
+                      id="partySize"
+                      value={partySize}
+                      onChange={(e) => setPartySize(Number(e.target.value))}
+                      className="px-3 py-2 rounded-xl border border-[#CBD5E1] bg-white font-bold text-sm text-[#002782] outline-none focus:ring-2 focus:ring-[#3EAFE8]/40"
+                    >
+                      {Array.from({ length: rsvp.maxPartySize }, (_, i) => i + 1).map((n) => (
+                        <option key={n} value={n}>
+                          {n} người {n === 1 ? '(chỉ mình tôi)' : `(tôi + ${n - 1})`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                {clientErrors.partySize && (
+                  <p className="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-medium">
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    <span>{clientErrors.partySize}</span>
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* 4. Số điện thoại (Chỉ bắt buộc nếu config yêu cầu) */}
+            <div>
+              <label
+                htmlFor="phone"
+                className="block text-xs sm:text-sm font-bold text-[#002782] mb-1.5"
+              >
+                Số điện thoại {rsvp.requirePhone ? <span className="text-[#FF6403]">*</span> : <span className="text-xs font-normal text-[#64748B]">(không bắt buộc)</span>}
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Ví dụ: 0912 345 678"
+                className={`w-full px-4 py-3.5 rounded-2xl text-sm transition-all border outline-none font-medium focus:ring-2 ${
+                  clientErrors.phone
+                    ? 'border-red-400 bg-red-50/50 focus:ring-red-400'
+                    : 'border-[#CBD5E1] bg-[#F8FAFC] focus:border-[#002782] focus:ring-[#3EAFE8]/40'
+                }`}
+              />
+              {clientErrors.phone && (
+                <p className="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-medium">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>{clientErrors.phone}</span>
+                </p>
+              )}
+            </div>
+
+            {/* 5. Lời chúc / Lời nhắn */}
+            <div>
+              <label
+                htmlFor="message"
+                className="block text-xs sm:text-sm font-bold text-[#002782] mb-1.5"
+              >
+                Lời chúc mừng hoặc lưu ý đặc biệt <span className="text-xs font-normal text-[#64748B]">(tùy chọn)</span>
+              </label>
+              <textarea
+                id="message"
+                rows={3}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Gửi lời chúc mừng đến Mekong Meris hoặc lưu ý đón tiếp..."
+                maxLength={500}
+                className="w-full px-4 py-3.5 rounded-2xl text-sm transition-all border border-[#CBD5E1] bg-[#F8FAFC] focus:border-[#002782] focus:ring-2 focus:ring-[#3EAFE8]/40 outline-none resize-none font-medium"
+              />
+              <div className="flex justify-between items-center text-[11px] text-[#64748B] mt-1">
+                <span>Tối đa 500 ký tự</span>
+                <span>{message.length}/500</span>
+              </div>
+            </div>
+
+            {/* 6. Nút gửi RSVP */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full min-h-[48px] px-6 py-4 rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-2.5 shadow-md bg-[#FF6403] hover:bg-[#e65800] text-white focus:outline-none focus:ring-4 focus:ring-[#3EAFE8]/40 shadow-[#FF6403]/25 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Đang gửi xác nhận...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4" />
+                  <span>Gửi Xác Nhận Tham Dự</span>
+                </>
+              )}
+            </button>
+
+            {/* Thông báo quyền riêng tư */}
+            <div className="pt-2 text-center text-xs text-[#64748B] flex items-start justify-center gap-1.5 leading-relaxed">
+              <ShieldCheck className="w-4 h-4 shrink-0 text-[#05681E] mt-0.5" />
+              <span>{rsvp.privacyNotice}</span>
+            </div>
+          </form>
+        )}
+      </div>
+    </section>
+  );
+};

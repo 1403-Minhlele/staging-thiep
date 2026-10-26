@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.wrangler/
+
+# Environment and sensitive credentials
+.env
+.env.local
+.dev.vars
+*.pem
+*.key
+
+# Test and coverage
+coverage/
+.vitest/
+
+# OS and Editor
+.DS_Store
+Thumbs.db
+*.log
