@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, Copy, Check, QrCode, MessageCircle, ExternalLink } from 'lucide-react';
-import QRCode from 'qrcode';
+import React from 'react';
+import { Calendar, Copy, QrCode, MessageCircle, ExternalLink } from 'lucide-react';
 import { InvitationConfig } from '../config/invitationContent';
 import { generateIcsCalendar, downloadIcsFile } from '../utils/dateTime';
 
@@ -9,27 +8,7 @@ interface CalendarShareSectionProps {
 }
 
 export const CalendarShareSection: React.FC<CalendarShareSectionProps> = ({ config }) => {
-  const { event, deployment } = config;
-
-  const [copied, setCopied] = useState(false);
-  const [showQrModal, setShowQrModal] = useState(false);
-  const [qrDataUrl, setQrDataUrl] = useState<string>('');
-
-  const shareUrl = deployment.canonicalUrl;
-
-  // Tạo mã QR bằng màu Royal Blue chuẩn thương hiệu
-  useEffect(() => {
-    QRCode.toDataURL(shareUrl, {
-      width: 280,
-      margin: 2,
-      color: {
-        dark: '#002782', // Royal Blue
-        light: '#FFFFFF',
-      },
-    })
-      .then((url) => setQrDataUrl(url))
-      .catch(() => {});
-  }, [shareUrl]);
+  const { event } = config;
 
   const handleDownloadIcs = () => {
     if (!event.dateIso || !event.startTime) {
@@ -47,27 +26,6 @@ export const CalendarShareSection: React.FC<CalendarShareSectionProps> = ({ conf
     });
 
     downloadIcsFile(`khai-truong-mekongmeris.ics`, ics);
-  };
-
-  const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    } catch {
-      // Fallback
-      prompt('Sao chép đường dẫn thiệp mời:', shareUrl);
-    }
-  };
-
-  const handleShareFacebook = () => {
-    const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-    window.open(fbUrl, '_blank', 'noopener,noreferrer');
-  };
-
-  const handleShareZalo = () => {
-    const zaloUrl = `https://zalo.me/share?url=${encodeURIComponent(shareUrl)}`;
-    window.open(zaloUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -125,13 +83,12 @@ export const CalendarShareSection: React.FC<CalendarShareSectionProps> = ({ conf
           </div>
         </div>
 
-        {/* 2. HÀNH ĐỘNG PHỤ (SECONDARY): Gửi thiệp qua mạng xã hội & QR */}
+        {/* Tạm thời chỉ hiển thị nút bấm, chưa gắn hành động chia sẻ. */}
         <div className="space-y-3">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             {/* Nút Zalo */}
             <button
               type="button"
-              onClick={handleShareZalo}
               className="min-h-[46px] px-3 py-2.5 rounded-xl text-xs font-bold border border-[#002782]/20 text-[#002782] md:hover:bg-[#002782]/5 transition-[transform,background-color] duration-150 ease-out flex items-center justify-center gap-1.5 active:scale-[0.97]"
             >
               <MessageCircle className="w-3.5 h-3.5 text-[#0068FF]" />
@@ -141,7 +98,6 @@ export const CalendarShareSection: React.FC<CalendarShareSectionProps> = ({ conf
             {/* Nút Facebook */}
             <button
               type="button"
-              onClick={handleShareFacebook}
               className="min-h-[46px] px-3 py-2.5 rounded-xl text-xs font-bold border border-[#002782]/20 text-[#002782] md:hover:bg-[#002782]/5 transition-[transform,background-color] duration-150 ease-out flex items-center justify-center gap-1.5 active:scale-[0.97]"
             >
               <ExternalLink className="w-3.5 h-3.5 text-[#1877F2]" />
@@ -151,26 +107,15 @@ export const CalendarShareSection: React.FC<CalendarShareSectionProps> = ({ conf
             {/* Nút Sao chép liên kết */}
             <button
               type="button"
-              onClick={handleCopyLink}
               className="min-h-[46px] px-3 py-2.5 rounded-xl text-xs font-bold border border-[#002782]/20 text-[#002782] md:hover:bg-[#002782]/5 transition-[transform,background-color] duration-150 ease-out flex items-center justify-center gap-1.5 active:scale-[0.97]"
             >
-              {copied ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-[#05681E]" />
-                  <span className="text-[#05681E]">Đã chép link!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3.5 h-3.5 text-[#002782]" />
-                  <span>Sao chép link</span>
-                </>
-              )}
+              <Copy className="w-3.5 h-3.5 text-[#002782]" />
+              <span>Sao chép link</span>
             </button>
 
             {/* Nút Mở QR Code */}
             <button
               type="button"
-              onClick={() => setShowQrModal(true)}
               className="min-h-[46px] px-3 py-2.5 rounded-xl text-xs font-bold border border-[#002782]/20 text-[#002782] md:hover:bg-[#002782]/5 transition-[transform,background-color] duration-150 ease-out flex items-center justify-center gap-1.5 active:scale-[0.97]"
             >
               <QrCode className="w-3.5 h-3.5 text-[#FF6403]" />
@@ -180,50 +125,6 @@ export const CalendarShareSection: React.FC<CalendarShareSectionProps> = ({ conf
         </div>
       </div>
 
-      {/* Modal hiển thị mã QR phóng to */}
-      {showQrModal && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="qr-modal-title"
-          className="fixed inset-0 z-50 bg-[#002782]/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in"
-          onClick={() => setShowQrModal(false)}
-        >
-          <div
-            className="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center shadow-2xl relative border border-[#002782]/20"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h4 id="qr-modal-title" className="font-sans font-bold text-xl text-[#002782] mb-1">
-              Quét Mã Để Mở Thiệp
-            </h4>
-            <p className="text-xs text-[#64748B] mb-4">
-              Mở ứng dụng camera trên điện thoại để quét mã
-            </p>
-
-            {qrDataUrl && (
-              <div className="p-4 bg-[#F5F7FB] rounded-2xl border border-[#002782]/15 inline-block">
-                <img
-                  src={qrDataUrl}
-                  alt="Mã QR thiệp mời khai trương Mekong Meris"
-                  className="w-56 h-56 mx-auto rounded-lg"
-                />
-              </div>
-            )}
-
-            <div className="mt-3 text-[11px] font-mono text-[#002782] break-all bg-[#002782]/5 p-2 rounded-xl border border-[#002782]/10">
-              {shareUrl}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setShowQrModal(false)}
-              className="mt-5 w-full py-3 rounded-2xl bg-[#002782] hover:bg-[#001d63] text-white text-xs font-bold transition-all"
-            >
-              Đóng Cửa Sổ
-            </button>
-          </div>
-        </div>
-      )}
     </section>
   );
 };
