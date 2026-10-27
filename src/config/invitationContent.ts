@@ -66,6 +66,7 @@ export interface InvitationConfig {
     address: string;
     isAddressPlaceholder: boolean;
 
+    eventUrl?: string; // Để rỗng đến khi liên kết sự kiện được xác nhận.
     googleMapsUrl: string;
     isMapsUrlPlaceholder: boolean;
 
@@ -146,6 +147,7 @@ export const invitationData: InvitationConfig = {
   // 2. Sự kiện khai trương
   event: {
     id: 'grand-opening-mekongmeris-2026',
+    eventUrl: '',
     coverTitle: 'THƯ MỜI KHAI TRƯƠNG',
     dateIso: '2026-11-07',
     dateDisplayFallback: '07/11/2026',
