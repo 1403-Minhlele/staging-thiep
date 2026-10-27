@@ -7,7 +7,6 @@ import { EditorialEventCard } from './components/EditorialEventCard';
 import { InvitationScreen, StorySection, ProductsSection, SpaceSection, ProgramSection, LocationSection, RsvpScreen } from './components/EditorialSections';
 import { RsvpSection } from './components/RsvpSection';
 import { CalendarShareSection } from './components/CalendarShareSection';
-import { Footer } from './components/Footer';
 
 export const App: React.FC = () => {
   // Trạng thái mở thiệp: Mặc định mỗi lần tải trang LUÔN bắt đầu ở trạng thái đóng (false).
@@ -97,8 +96,9 @@ export const App: React.FC = () => {
             behavior: 'smooth',
             block: 'start',
           });
-          targetElement.focus?.();
+          targetElement.focus?.({ preventScroll: true });
         }
+
       }, 40);
     }, 200);
   };
@@ -144,9 +144,6 @@ export const App: React.FC = () => {
             <RsvpScreen><RsvpSection config={invitationData} /></RsvpScreen>
             <div className="editorial-extras"><CalendarShareSection config={invitationData} /></div>
           </main>
-
-          {/* 4. Chân trang chính thức (chỉ hiển thị cùng nội dung thiệp đã mở) */}
-          <Footer config={invitationData} />
         </>
       )}
       </div>

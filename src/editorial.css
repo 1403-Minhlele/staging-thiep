@@ -20,7 +20,7 @@
 
 .editorial-inner {
   position: relative;
-  padding: 28px clamp(22px, 6vw, 70px) 52px;
+  padding: 28px clamp(20px, 6vw, 70px) 44px;
   max-width: 680px;
   margin: auto;
 }
@@ -51,13 +51,6 @@
   margin-right: 4px;
 }
 
-.editorial-number {
-  text-align: right;
-  font-size: 10px;
-  letter-spacing: .12em;
-  color: #7e8b9c;
-  margin-top: 36px;
-}
 
 .brand-stripe {
   position: absolute;
@@ -130,11 +123,13 @@
 }
 
 .editorial-letter h1 {
-  font-size: clamp(32px, 9.5vw, 62px);
+  font-size: clamp(24px, 8.5vw, 62px);
+  line-height: 1.15;
   margin: 20px 0;
   word-break: break-word;
   overflow-wrap: break-word;
 }
+
 
 .editorial-rule {
   width: 38px;
@@ -245,8 +240,7 @@
   min-height: 740px;
 }
 
-.story-panel .editorial-kicker,
-.story-panel .editorial-number {
+.story-panel .editorial-kicker {
   color: #e6efff;
 }
 
@@ -627,24 +621,225 @@
 
 .editorial-extras {
   max-width: 720px;
-  margin: auto;
+  margin: 0 auto 36px;
+  padding-bottom: 24px;
 }
 
-/* Stagger entrance for inner components of each panel when revealed */
-.section-reveal.reveal-entered .editorial-heading,
-.section-reveal.reveal-entered .rsvp-editorial-heading {
-  animation: section-arrive 400ms var(--ease-out-cubic) 30ms both;
+/* ==========================================================================
+   Motion System & Choreographed Entrance Animations
+   - Opacity & subtle transforms (12–18px)
+   - Duration: 550–750ms for stately, corporate editorial elegance
+   - Easing: cubic-bezier(0.23, 1, 0.32, 1)
+   - Stagger: 50–90ms between semantic groups
+   ========================================================================== */
+
+@keyframes reveal-title-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
-.section-reveal.reveal-entered .editorial-intro,
-.section-reveal.reveal-entered .story-copy,
-.section-reveal.reveal-entered .product-stack,
-.section-reveal.reveal-entered .space-grid,
-.section-reveal.reveal-entered .program-list,
-.section-reveal.reveal-entered .location-card,
+@keyframes reveal-slide-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-14px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes reveal-slide-right {
+  from {
+    opacity: 0;
+    transform: translate3d(14px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes reveal-photo {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes reveal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* While pending in viewport observer, designated child groups are hidden */
+.section-reveal.reveal-pending .editorial-kicker,
+.section-reveal.reveal-pending .letter-hero,
+.section-reveal.reveal-pending .letter-title,
+.section-reveal.reveal-pending .letter-body,
+.section-reveal.reveal-pending .editorial-event-card,
+.section-reveal.reveal-pending .editorial-heading,
+.section-reveal.reveal-pending .story-copy,
+.section-reveal.reveal-pending blockquote,
+.section-reveal.reveal-pending .story-signoff,
+.section-reveal.reveal-pending .editorial-intro,
+.section-reveal.reveal-pending .product-stack figure,
+.section-reveal.reveal-pending .space-grid figure,
+.section-reveal.reveal-pending .program-start,
+.section-reveal.reveal-pending .program-list li,
+.section-reveal.reveal-pending .program-image,
+.section-reveal.reveal-pending .location-card,
+.section-reveal.reveal-pending .facade-image,
+.section-reveal.reveal-pending .editorial-cta,
+.section-reveal.reveal-pending .location-hotline,
+.section-reveal.reveal-pending .rsvp-editorial-heading,
+.section-reveal.reveal-pending #rsvp,
+.section-reveal.reveal-pending .rsvp-thanks {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Màn 02: Thư mời khai trương (Trình tự: Logo/nhãn -> Tiêu đề -> Nội dung -> Thẻ sự kiện) */
+.section-reveal.reveal-entered .letter-hero {
+  animation: reveal-fade 550ms var(--ease-out-cubic) 40ms both;
+}
+.section-reveal.reveal-entered .letter-title {
+  animation: reveal-title-up 650ms var(--ease-out-cubic) 120ms both;
+}
+.section-reveal.reveal-entered .letter-body {
+  animation: reveal-title-up 650ms var(--ease-out-cubic) 200ms both;
+}
 .section-reveal.reveal-entered .editorial-event-card {
-  animation: section-arrive 420ms var(--ease-out-cubic) 70ms both;
+  animation: reveal-title-up 650ms var(--ease-out-cubic) 280ms both;
 }
+
+/* Màn 03: Câu chuyện Mekong Meris */
+.section-reveal.reveal-entered .story-panel .editorial-kicker {
+  animation: reveal-fade 500ms var(--ease-out-cubic) 30ms both;
+}
+.section-reveal.reveal-entered .story-panel .editorial-heading {
+  animation: reveal-title-up 600ms var(--ease-out-cubic) 60ms both;
+}
+.section-reveal.reveal-entered .story-copy {
+  animation: reveal-slide-left 650ms var(--ease-out-cubic) 130ms both;
+}
+.section-reveal.reveal-entered .story-panel blockquote {
+  animation: reveal-fade 600ms var(--ease-out-cubic) 200ms both;
+}
+.section-reveal.reveal-entered .story-signoff {
+  animation: reveal-fade 550ms var(--ease-out-cubic) 270ms both;
+}
+
+/* Màn 04: Sản phẩm tiêu biểu */
+.section-reveal.reveal-entered .products-panel .editorial-heading {
+  animation: reveal-title-up 600ms var(--ease-out-cubic) 40ms both;
+}
+.section-reveal.reveal-entered .products-panel .editorial-intro {
+  animation: reveal-fade 550ms var(--ease-out-cubic) 100ms both;
+}
+.section-reveal.reveal-entered .product-stack figure:nth-child(1) {
+  animation: reveal-photo 650ms var(--ease-out-cubic) 170ms both;
+}
+.section-reveal.reveal-entered .product-stack figure:nth-child(2) {
+  animation: reveal-photo 650ms var(--ease-out-cubic) 240ms both;
+}
+
+/* Màn 05: Không gian cửa hàng */
+.section-reveal.reveal-entered .space-panel .editorial-heading {
+  animation: reveal-title-up 600ms var(--ease-out-cubic) 40ms both;
+}
+.section-reveal.reveal-entered .space-panel .editorial-intro {
+  animation: reveal-fade 550ms var(--ease-out-cubic) 100ms both;
+}
+.section-reveal.reveal-entered .space-feature {
+  animation: reveal-photo 650ms var(--ease-out-cubic) 170ms both;
+}
+.section-reveal.reveal-entered .space-grid figure:nth-child(2) {
+  animation: reveal-photo 600ms var(--ease-out-cubic) 230ms both;
+}
+.section-reveal.reveal-entered .space-grid figure:nth-child(3) {
+  animation: reveal-photo 600ms var(--ease-out-cubic) 290ms both;
+}
+.section-reveal.reveal-entered .space-grid figure:nth-child(4) {
+  animation: reveal-photo 600ms var(--ease-out-cubic) 350ms both;
+}
+.section-reveal.reveal-entered .space-grid figure:nth-child(5) {
+  animation: reveal-photo 600ms var(--ease-out-cubic) 410ms both;
+}
+
+/* Màn 06: Chương trình sự kiện (Các mục timeline hiện lần lượt) */
+.section-reveal.reveal-entered .program-panel .editorial-heading {
+  animation: reveal-title-up 600ms var(--ease-out-cubic) 40ms both;
+}
+.section-reveal.reveal-entered .program-start {
+  animation: reveal-slide-left 600ms var(--ease-out-cubic) 110ms both;
+}
+.section-reveal.reveal-entered .program-list li:nth-child(1) {
+  animation: reveal-title-up 600ms var(--ease-out-cubic) 180ms both;
+}
+.section-reveal.reveal-entered .program-list li:nth-child(2) {
+  animation: reveal-title-up 600ms var(--ease-out-cubic) 250ms both;
+}
+.section-reveal.reveal-entered .program-list li:nth-child(3) {
+  animation: reveal-title-up 600ms var(--ease-out-cubic) 320ms both;
+}
+.section-reveal.reveal-entered .program-list li:nth-child(4) {
+  animation: reveal-title-up 600ms var(--ease-out-cubic) 390ms both;
+}
+.section-reveal.reveal-entered .program-image {
+  animation: reveal-photo 650ms var(--ease-out-cubic) 460ms both;
+}
+
+/* Màn 07: Địa điểm & Chỉ đường */
+.section-reveal.reveal-entered .location-panel .editorial-heading {
+  animation: reveal-title-up 600ms var(--ease-out-cubic) 40ms both;
+}
+.section-reveal.reveal-entered .location-card {
+  animation: reveal-slide-left 650ms var(--ease-out-cubic) 110ms both;
+}
+.section-reveal.reveal-entered .facade-image {
+  animation: reveal-photo 650ms var(--ease-out-cubic) 180ms both;
+}
+.section-reveal.reveal-entered .editorial-cta {
+  animation: reveal-title-up 600ms var(--ease-out-cubic) 250ms both;
+}
+.section-reveal.reveal-entered .location-panel .location-hotline {
+  animation: reveal-fade 550ms var(--ease-out-cubic) 320ms both;
+}
+
+/* Màn 08: Xác nhận tham dự (RSVP) */
+.section-reveal.reveal-entered .rsvp-editorial-heading {
+  animation: reveal-title-up 600ms var(--ease-out-cubic) 40ms both;
+}
+.section-reveal.reveal-entered .rsvp-panel #rsvp {
+  animation: reveal-title-up 650ms var(--ease-out-cubic) 120ms both;
+}
+.section-reveal.reveal-entered .rsvp-thanks {
+  animation: reveal-fade 550ms var(--ease-out-cubic) 200ms both;
+}
+.section-reveal.reveal-entered .rsvp-panel .location-hotline {
+  animation: reveal-fade 550ms var(--ease-out-cubic) 260ms both;
+}
+
+/* Tiện ích lưu lịch & chia sẻ */
+.editorial-extras #calendar-share {
+  animation: reveal-title-up 600ms var(--ease-out-cubic) 60ms both;
+}
+
 
 @media(min-width: 740px) {
   .editorial-panel {
@@ -668,9 +863,10 @@
     padding-right: 14px;
   }
   .editorial-letter h1 {
-    font-size: 30px;
+    font-size: 25px;
     line-height: 1.15;
   }
+
   .editorial-heading h2,
   .rsvp-editorial-heading h2 {
     font-size: 26px;
@@ -755,19 +951,16 @@ html {
 
 @media(prefers-reduced-motion: reduce) {
   .editorial-panel *,
-  .section-reveal.reveal-entered .editorial-heading,
-  .section-reveal.reveal-entered .rsvp-editorial-heading,
-  .section-reveal.reveal-entered .editorial-intro,
-  .section-reveal.reveal-entered .story-copy,
-  .section-reveal.reveal-entered .product-stack,
-  .section-reveal.reveal-entered .space-grid,
-  .section-reveal.reveal-entered .program-list,
-  .section-reveal.reveal-entered .location-card,
-  .section-reveal.reveal-entered .editorial-event-card {
+  .section-reveal.reveal-pending *,
+  .section-reveal.reveal-entered *,
+  .editorial-cta,
+  .rsvp-panel #rsvp button,
+  .cover-bottom button {
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
     transform: none !important;
     opacity: 1 !important;
+    pointer-events: auto !important;
   }
 }

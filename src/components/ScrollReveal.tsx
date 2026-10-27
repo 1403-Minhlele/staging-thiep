@@ -32,12 +32,8 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
     const isInitiallyInView = rect.top < window.innerHeight && rect.bottom > 0;
 
     if (isInitiallyInView) {
-      element.classList.add('reveal-pending');
-      const animFrame = requestAnimationFrame(() => {
-        element.classList.remove('reveal-pending');
-        element.classList.add('reveal-entered');
-      });
-      return () => cancelAnimationFrame(animFrame);
+      element.classList.add('reveal-entered');
+      return;
     }
 
     // 3. Với các màn còn ở phía dưới: ẩn nhẹ trước và quan sát khi cuộn tới

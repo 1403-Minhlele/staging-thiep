@@ -91,6 +91,17 @@
   margin: 0 auto 22px;
 }
 
+@keyframes cta-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 14px rgba(0, 39, 130, 0.16);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(0, 39, 130, 0.28);
+  }
+}
+
 .cover-bottom button {
   width: 100%;
   min-height: 54px;
@@ -109,6 +120,7 @@
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
+  animation: cta-pulse 3s ease-in-out infinite;
   transition: transform 130ms cubic-bezier(0.23, 1, 0.32, 1), background-color 160ms ease, box-shadow 160ms ease;
 }
 
@@ -120,14 +132,16 @@
 }
 
 .cover-bottom button:active {
+  animation: none;
   transform: scale(0.975);
   background: #001d63;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .cover-bottom button:hover {
+    animation-play-state: paused;
     background: #123c92;
-    box-shadow: 0 4px 16px rgba(0, 39, 130, 0.25);
+    box-shadow: 0 6px 20px rgba(0, 39, 130, 0.3);
   }
 }
 
@@ -144,9 +158,6 @@
   font-size: 10px;
 }
 
-.cover-bottom .editorial-number {
-  margin-top: 18px;
-}
 
 .cover-panel .editorial-kicker {
   text-align: left;
@@ -175,7 +186,9 @@
     transform: none !important;
     opacity: 1 !important;
   }
+  .cover-bottom button,
   .cover-bottom button:active {
+    animation: none !important;
     transform: none !important;
   }
 }

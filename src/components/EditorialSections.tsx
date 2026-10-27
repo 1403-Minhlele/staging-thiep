@@ -6,9 +6,9 @@ const Header: React.FC = () => (
   <div className="editorial-kicker"><span><i /> MEKONG MERIS</span><span>GRAND OPENING</span></div>
 );
 
-const Frame: React.FC<{ number: string; className?: string; children: React.ReactNode }> = ({ number, className = '', children }) => (
+const Frame: React.FC<{ className?: string; children: React.ReactNode }> = ({ className = '', children }) => (
   <section className={`editorial-panel ${className}`}>
-    <div className="editorial-inner"><Header />{children}<div className="editorial-number">{number} / 08</div></div>
+    <div className="editorial-inner"><Header />{children}</div>
     <div className="brand-stripe" aria-hidden="true" />
   </section>
 );
@@ -18,7 +18,7 @@ const Title: React.FC<{ eyebrow: string; first: string; second: string }> = ({ e
 );
 
 export const StorySection: React.FC = () => (
-  <ScrollReveal><Frame number="03" className="story-panel">
+  <ScrollReveal><Frame className="story-panel">
     <Title eyebrow="WHY WE BEGAN" first="Một khởi đầu" second="từ sự trăn trở." />
     <div className="story-copy">
       <p>Mekong Meris được hình thành từ sự đồng hành của sáu người cộng sự và đối tác lâu năm, cùng chung một trăn trở về thực phẩm cho gia đình Việt.</p>
@@ -31,7 +31,7 @@ export const StorySection: React.FC = () => (
 );
 
 export const ProductsSection: React.FC = () => (
-  <ScrollReveal><Frame number="04" className="products-panel">
+  <ScrollReveal><Frame className="products-panel">
     <Title eyebrow="PRODUCT HIGHLIGHTS" first="Một vài sản phẩm" second="tiêu biểu." />
     <p className="editorial-intro">Những sản phẩm tiêu biểu của Mekong Meris được giới thiệu nhân dịp khai trương.</p>
     <div className="product-stack">
@@ -43,7 +43,7 @@ export const ProductsSection: React.FC = () => (
 
 const spaceImages = ['space-main', 'space-2', 'space-3', 'space-4', 'space-5'];
 export const SpaceSection: React.FC = () => (
-  <ScrollReveal><Frame number="05" className="space-panel">
+  <ScrollReveal><Frame className="space-panel">
     <Title eyebrow="THE SPACE WE ENVISION" first="Một không gian" second="để gặp gỡ." />
     <p className="editorial-intro">Một không gian để khám phá sản phẩm, trò chuyện và cùng thưởng thức những hương vị mới.</p>
     <div className="space-grid">{spaceImages.map((name, index) => <figure key={name} className={index === 0 ? 'space-feature' : ''}>
@@ -59,7 +59,7 @@ const agenda = [
   ['Dùng thử sản phẩm', 'Thưởng thức những hương vị chọn lọc'],
 ];
 export const ProgramSection: React.FC = () => (
-  <ScrollReveal><Frame number="06" className="program-panel">
+  <ScrollReveal><Frame className="program-panel">
     <Title eyebrow="THE GRAND OPENING EXPERIENCE" first="Hẹn gặp tại" second="ngày khai trương." />
     <div className="program-start"><span>BẮT ĐẦU</span><strong>{invitationData.event.startTime} · 07/11/2026</strong></div>
     <ol className="program-list">{agenda.map(([title, description], index) => <li key={title}><span className="program-index">{String(index + 1).padStart(2, '0')}</span><div><strong>{title}</strong><p>{description}</p></div></li>)}</ol>
@@ -69,7 +69,7 @@ export const ProgramSection: React.FC = () => (
 
 export const LocationSection: React.FC = () => {
   const { event } = invitationData;
-  return <ScrollReveal><Frame number="07" className="location-panel">
+  return <ScrollReveal><Frame className="location-panel">
     <Title eyebrow="FIND YOUR WAY" first="Hẹn gặp tại" second="Mekong Meris." />
     <div className="location-card"><span className="editorial-eyebrow">ĐỊA ĐIỂM KHAI TRƯƠNG</span><strong>176 Hồng Bàng</strong><p>Phường Chợ Lớn, TP. Hồ Chí Minh</p><span>Thứ Bảy · 07/11/2026 · {event.startTime}</span></div>
     <figure className="facade-image"><img src="/images/pdf/storefront.webp" alt="Phối cảnh mặt tiền dự kiến cửa hàng Mekong Meris" loading="lazy" /></figure>
@@ -79,11 +79,11 @@ export const LocationSection: React.FC = () => {
 };
 
 export const InvitationScreen: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <ScrollReveal><Frame number="02" className="letter-panel">{children}</Frame></ScrollReveal>
+  <ScrollReveal><Frame className="letter-panel">{children}</Frame></ScrollReveal>
 );
 
 export const RsvpScreen: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <ScrollReveal><Frame number="08" className="rsvp-panel">
+  <ScrollReveal><Frame className="rsvp-panel">
     <div className="rsvp-editorial-heading"><span className="editorial-eyebrow">✦ &nbsp; WE LOOK FORWARD TO SEEING YOU</span><h2>Sự hiện diện của Quý khách là <em>niềm vinh hạnh.</em></h2><p>Xin Quý khách vui lòng xác nhận để chúng tôi chuẩn bị đón tiếp chu đáo.</p></div>
     {children}
     <div className="rsvp-thanks">Trân trọng cảm ơn!</div><div className="location-hotline"><span>HỖ TRỢ THÔNG TIN</span><a href="tel:+84778828668">+84 77 882 8668</a></div>

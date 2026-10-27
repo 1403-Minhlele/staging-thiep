@@ -36,7 +36,6 @@ export const EditorialCover: React.FC<{
           MỞ THƯ MỜI <span aria-hidden="true">↗</span>
         </button>
         <small>{config.brand.tagline}</small>
-        <div className="editorial-number">01 / 08</div>
       </div>
       <div className="brand-stripe" aria-hidden="true" />
     </section>

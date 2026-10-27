@@ -70,7 +70,8 @@ describe('Interactive Envelope Opening Flow & Audio Removal', () => {
     expect(screen.getByLabelText(/Thư mời từ Mekong Meris/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Thông tin thời gian và địa điểm/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Xác nhận tham dự sự kiện khai trương/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Thông tin chân trang Mekong Meris/i)).toBeInTheDocument();
+    // Footer has been intentionally removed per specification
+    expect(screen.queryByLabelText(/Thông tin chân trang Mekong Meris/i)).toBeNull();
 
     // The editorial cover gives way to the invitation after opening.
     expect(screen.queryByRole('button', { name: /Chạm Để Mở Thiệp/i })).toBeNull();
@@ -160,5 +161,33 @@ describe('Interactive Envelope Opening Flow & Audio Removal', () => {
     await waitFor(() => {
       expect(document.getElementById('main-invitation-content')).toBeInTheDocument();
     });
+  });
+
+  it('removes all screen/page numbers (e.g. 01 / 08, 02 / 08) while preserving timeline agenda step numbers', async () => {
+    render(<App />);
+
+    // 1. Cover has no 01 / 08
+    expect(screen.queryByText(/01\s*\/\s*08/)).toBeNull();
+
+    // Open invitation
+    const openButton = screen.getByRole('button', { name: /Chạm Để Mở Thiệp/i });
+    fireEvent.click(openButton);
+
+    await waitFor(() => {
+      expect(document.getElementById('main-invitation-content')).toBeInTheDocument();
+    });
+
+    // 2. No screen counters in open invitation
+    expect(screen.queryByText(/02\s*\/\s*08/)).toBeNull();
+    expect(screen.queryByText(/08\s*\/\s*08/)).toBeNull();
+    expect(document.querySelectorAll('.editorial-number').length).toBe(0);
+
+    // 3. Agenda timeline steps remain intact
+    expect(screen.getByText('01')).toBeInTheDocument();
+    expect(screen.getByText('02')).toBeInTheDocument();
+    expect(screen.getByText('03')).toBeInTheDocument();
+    expect(screen.getByText('04')).toBeInTheDocument();
+    expect(screen.getByText('Đón khách')).toBeInTheDocument();
+    expect(screen.getByText('Dùng thử sản phẩm')).toBeInTheDocument();
   });
 });
