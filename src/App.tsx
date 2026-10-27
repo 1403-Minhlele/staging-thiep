@@ -94,7 +94,7 @@ export const App: React.FC = () => {
       setIsOpen(true);
       setIsExitingCover(false);
       openTimerRef.current = null;
-    }, 620);
+    }, 899); // 620ms × 1.45; matches the cover CSS exit duration + delay.
   };
 
   const handleReplayInvitation = () => {

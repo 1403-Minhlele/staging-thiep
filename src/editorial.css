@@ -633,7 +633,7 @@
 /* Stagger entrance for inner components of each panel when revealed */
 .section-reveal.reveal-entered .editorial-heading,
 .section-reveal.reveal-entered .rsvp-editorial-heading {
-  animation: section-arrive 400ms var(--ease-out-cubic) 30ms both;
+  animation: section-arrive 580ms var(--ease-out-cubic) 43.5ms both;
 }
 
 .section-reveal.reveal-entered .editorial-intro,
@@ -643,7 +643,7 @@
 .section-reveal.reveal-entered .program-list,
 .section-reveal.reveal-entered .location-card,
 .section-reveal.reveal-entered .editorial-event-card {
-  animation: section-arrive 420ms var(--ease-out-cubic) 70ms both;
+  animation: section-arrive 609ms var(--ease-out-cubic) 101.5ms both;
 }
 
 @media(min-width: 740px) {
