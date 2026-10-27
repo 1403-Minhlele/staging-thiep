@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, MailOpen, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { Mail, MailOpen, ChevronDown } from 'lucide-react';
 import { InvitationConfig } from '../config/invitationContent';
 import { getDayOfWeekInVietnam, formatVietnameseDate } from '../utils/dateTime';
 
@@ -51,41 +51,13 @@ export const Cover: React.FC<CoverProps> = ({
     }, 750);
   };
 
-  // 1. TRẠNG THÁI ĐÃ MỞ (OPENED): Chuyển thành thanh tiêu đề thương hiệu tinh gọn
-  if (isOpen) {
-    return (
-      <header
-        aria-label="Đầu trang thư mời khai trương Mekong Meris"
-        className="w-full py-6 md:py-8 border-b border-[#002782]/10 bg-white text-center px-4 transition-all duration-500 shadow-sm"
-      >
-        <div className="w-full max-w-xl mx-auto flex flex-col items-center">
-          <div className="py-1 px-4 max-w-[220px] sm:max-w-[260px] mx-auto">
-            <img
-              src={brand.logoUrl}
-              alt={`Logo ${brand.storeName}`}
-              className="w-full h-auto object-contain block mx-auto"
-              loading="eager"
-            />
-          </div>
-
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase mt-2.5 bg-[#002782]/5 text-[#002782]">
-            <span>{brand.tagline}</span>
-          </div>
-
-          <div className="mt-3 flex items-center justify-center gap-1.5 text-xs font-semibold text-[#05681E] bg-[#609900]/10 px-3.5 py-1 rounded-full border border-[#609900]/20">
-            <CheckCircle2 className="w-3.5 h-3.5 text-[#609900]" />
-            <span>Thư mời đã được mở</span>
-          </div>
-        </div>
-      </header>
-    );
-  }
+  if (isOpen) return null;
 
   // 2. TRẠNG THÁI ĐÓNG / ĐANG MỞ (CLOSED / OPENING ENVELOPE)
   return (
     <section
       aria-label="Bìa thiệp mời khai trương Mekong Meris"
-      className="relative w-full min-h-[90vh] sm:min-h-screen bg-gradient-to-b from-[#F5F7FB] via-white to-[#EBF0F9] flex flex-col items-center justify-center text-center px-4 pt-16 sm:pt-20 pb-12 overflow-x-hidden"
+      className="relative w-full min-h-[90vh] sm:min-h-screen bg-white/20 flex flex-col items-center justify-center text-center px-4 pt-16 sm:pt-20 pb-12 overflow-x-hidden"
     >
       {/* Thông báo cho công nghệ trợ năng khi đang mở thư */}
       <div aria-live="polite" className="sr-only">
@@ -240,12 +212,12 @@ export const Cover: React.FC<CoverProps> = ({
               />
             </svg>
 
-            {/* Dấu niêm phong tròn với biểu tượng chính thức Mekong Meris */}
+            {/* Dấu niêm phong tròn sang trọng với biểu tượng chính thức Mekong Meris */}
             <button
               type="button"
               onClick={handleOpenClick}
               disabled={isOpening}
-              className={`absolute left-1/2 -translate-x-1/2 top-[118px] sm:top-[118px] w-10 h-10 rounded-full bg-[#FF6403] border-2 border-white shadow-md flex items-center justify-center p-2 cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3EAFE8] ${
+              className={`absolute left-1/2 -translate-x-1/2 top-[116px] sm:top-[116px] w-11 h-11 rounded-full bg-gradient-to-br from-[#FF7A24] to-[#FF6403] border-2 border-white shadow-[0_4px_14px_rgba(255,100,3,0.35)] ring-2 ring-[#FF6403]/30 flex items-center justify-center p-2.5 cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3EAFE8] ${
                 isOpening ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100'
               }`}
               aria-label="Nhấn vào dấu niêm phong để mở thiệp"
@@ -261,16 +233,16 @@ export const Cover: React.FC<CoverProps> = ({
         </div>
       </div>
 
-      {/* 5. Nút bấm Mở Thiệp (CTA) — Đặt ngay dưới phong bì, kích thước chạm lớn >= 48px */}
-      <div className="mt-8 flex flex-col items-center">
+      {/* 5. Nút bấm Mở Thiệp (CTA) — Thiết kế trang trọng, kích thước chạm lớn >= 48px */}
+      <div className="mt-9 flex flex-col items-center">
         <button
           type="button"
           onClick={handleOpenClick}
           disabled={isOpening}
-          className={`group relative min-h-[48px] px-8 py-3.5 rounded-full font-sans text-base sm:text-lg font-bold tracking-wide transition-all transform active:scale-95 shadow-md hover:shadow-lg flex items-center justify-center gap-3 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#3EAFE8]/50 ${
+          className={`group relative min-h-[50px] px-8 sm:px-10 py-3.5 rounded-full font-sans text-base sm:text-lg font-bold tracking-wide transition-all transform active:scale-95 shadow-[0_8px_25px_rgba(255,100,3,0.28)] hover:shadow-[0_12px_32px_rgba(255,100,3,0.38)] flex items-center justify-center gap-3 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#3EAFE8]/50 ${
             isOpening
               ? 'bg-[#e65800] text-white shadow-[#FF6403]/40 cursor-wait'
-              : 'bg-[#FF6403] hover:bg-[#e65800] text-white shadow-[#FF6403]/30 hover:shadow-xl'
+              : 'bg-gradient-to-r from-[#FF6403] via-[#FF7014] to-[#FF6403] hover:from-[#e65800] hover:to-[#FF6403] text-white'
           }`}
           aria-expanded={isOpen}
           aria-controls="main-invitation-content"
@@ -290,7 +262,7 @@ export const Cover: React.FC<CoverProps> = ({
           )}
         </button>
 
-        <span className="text-xs text-[#64748B] mt-2.5 font-medium">
+        <span className="text-xs text-[#64748B] mt-3 font-medium tracking-wide">
           Nhấn để mở phong bì & xem thư mời
         </span>
       </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Clock, MapPin, Navigation, Shirt, Store } from 'lucide-react';
+import { Navigation } from 'lucide-react';
 import { InvitationConfig } from '../config/invitationContent';
 import { getDayOfWeekInVietnam, formatVietnameseDate } from '../utils/dateTime';
 
@@ -19,128 +19,102 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ config }) => {
       id="event-details"
       tabIndex={-1}
       aria-label="Thông tin thời gian và địa điểm"
-      className="py-12 px-5 sm:px-8 max-w-4xl mx-auto font-sans outline-none focus:outline-none"
+      className="text-center font-sans outline-none focus:outline-none"
     >
-      <div className="text-center mb-10">
-        <span className="text-xs uppercase tracking-widest text-[#FF6403] font-bold">
-          Chi Tiết Sự Kiện
-        </span>
-        <h2 className="font-sans text-2xl sm:text-3xl font-bold mt-1 tracking-tight text-[#002782]">
+      {/* Tiêu đề mục chi tiết sự kiện (Cấp 3 - Đồng nhất với lời chào bên cột trái) */}
+      <div className="mb-5">
+        <span className="text-xs uppercase tracking-wider text-[#64748B] font-semibold block">
           Thời Gian & Địa Điểm
-        </h2>
-        <div className="w-12 h-1 bg-[#FF6403] rounded-full mx-auto mt-3" />
+        </span>
+        <h3 className="font-sans text-lg sm:text-xl font-bold tracking-tight text-[#002782] mt-1">
+          Chương Trình Đón Tiếp
+        </h3>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-        {/* Thẻ 1: Thời gian */}
-        <div className="p-6 sm:p-8 rounded-3xl relative transition-all shadow-sm bg-white border border-[#002782]/10 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 bg-[#002782]/10 text-[#002782]">
-                <Calendar className="w-5 h-5 text-[#002782]" />
-              </div>
-              <div>
-                <h3 className="font-sans font-bold text-lg text-[#002782]">Ngày Tổ Chức</h3>
-                <p className="text-xs text-[#64748B]">Múi giờ Việt Nam (GMT+7)</p>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="py-2 px-4 rounded-2xl bg-[#F5F7FB] border border-[#002782]/10">
-                <div className="text-xl sm:text-2xl font-bold text-[#002782]">
-                  {weekday || 'Thứ Bảy'}
-                </div>
-                <div className="text-base font-semibold text-[#FF6403] mt-0.5">
-                  Ngày {formattedDate || event.dateDisplayFallback}
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-[#002782]/10">
-                <div className="flex items-center gap-2 text-sm font-semibold text-[#002782] mb-2">
-                  <Clock className="w-4 h-4 text-[#FF6403] shrink-0" />
-                  <span>Các khung giờ đón tiếp chu đáo:</span>
-                </div>
-                {event.receptionSlots && event.receptionSlots.length > 0 && (
-                  <div className="grid grid-cols-1 gap-2">
-                    {event.receptionSlots.map((slot, idx) => (
-                      <div
-                        key={slot}
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-white border border-[#002782]/15 text-xs sm:text-sm font-medium text-[#0F172A]"
-                      >
-                        <span className="w-5 h-5 rounded-full bg-[#002782] text-white text-[11px] font-bold flex items-center justify-center shrink-0">
-                          {idx + 1}
-                        </span>
-                        <span>Khung đón khách: <strong>{slot}</strong></span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {event.openingHours && (
-                <div className="pt-3 border-t border-[#002782]/10 flex items-start gap-2 text-xs text-[#64748B]">
-                  <Store className="w-4 h-4 text-[#609900] shrink-0 mt-0.5" />
-                  <span>
-                    Giờ mở cửa thường ngày: <strong>{event.openingHours}</strong> (phục vụ mua sắm liên tục).
-                  </span>
-                </div>
-              )}
-
-              {event.dressCode && (
-                <div className="flex items-center gap-2 text-xs text-[#64748B]">
-                  <Shirt className="w-4 h-4 text-[#3EAFE8] shrink-0" />
-                  <span>Trang phục: <strong>{event.dressCode}</strong></span>
-                </div>
-              )}
-            </div>
+      {/*
+        VÙNG NỘI DUNG BIÊN TẬP THỐNG NHẤT:
+        Thứ bậc rõ ràng: NGÀY (Cấp 2) → KHUNG GIỜ ĐÓN KHÁCH (Nhịp điệu nhóm) → THÔNG TIN PHỤ → ĐỊA ĐIỂM → CHỈ ĐƯỜNG
+        Không đóng hộp từng khung giờ thành pill/card riêng gây vụn vặt.
+      */}
+      <div className="max-w-xl mx-auto space-y-5 text-[#0F172A]">
+        {/* 1. NGÀY TỔ CHỨC (Cấp 2 - Trọng tâm của cột chi tiết, nhưng không lấn át tiêu đề chính) */}
+        <div className="space-y-1">
+          <span className="font-handwriting text-base sm:text-lg font-bold text-[#002782]/85 block -mb-0.5 tracking-normal">
+            Ngày Khai Trương Chính Thức
+          </span>
+          <div className="font-sans text-xl sm:text-2xl font-bold text-[#002782] tracking-tight">
+            {weekday || 'Thứ Bảy'}, {formattedDate ? `Ngày ${formattedDate}` : event.dateDisplayFallback}
           </div>
         </div>
 
-        {/* Thẻ 2: Địa điểm & Nút Chỉ Đường */}
-        <div className="p-6 sm:p-8 rounded-3xl relative transition-all shadow-sm bg-white border border-[#002782]/10 flex flex-col justify-between">
+        {/* 2. CÁC KHUNG GIỜ ĐÓN KHÁCH (Trình bày như MỘT nhóm có nhịp đều đặn, không flex-wrap lẻ loi) */}
+        <div className="space-y-2.5 pt-4 border-t border-[#002782]/10">
+          <span className="text-xs uppercase tracking-wider text-[#64748B] font-semibold block">
+            Khung Giờ Đón Khách
+          </span>
+
+          {event.receptionSlots && event.receptionSlots.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 sm:gap-2.5 max-w-sm sm:max-w-md mx-auto text-center">
+              {event.receptionSlots.map((slot) => (
+                <div
+                  key={slot}
+                  className="py-1 px-2 text-sm sm:text-[15px] font-semibold text-[#002782] tabular-nums"
+                >
+                  {slot}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Phân tách rõ ràng thông tin hoạt động thường ngày của cửa hàng khỏi các khung giờ sự kiện */}
+          <div className="pt-3 border-t border-[#002782]/10 text-xs text-[#64748B] space-y-1">
+            {event.openingHours && (
+              <p>
+                Giờ mở cửa phục vụ thường ngày: <span className="font-semibold text-[#334155]">{event.openingHours}</span>
+              </p>
+            )}
+            {event.dressCode && (
+              <p>
+                Trang phục đề xuất: <span className="font-semibold text-[#334155]">{event.dressCode}</span>
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* 3. ĐỊA ĐIỂM CỬA HÀNG & 4. HÀNH ĐỘNG CHỈ ĐƯỜNG */}
+        <div className="space-y-2.5 pt-4 border-t border-[#002782]/10">
+          <span className="text-xs uppercase tracking-wider text-[#64748B] font-semibold block">
+            Địa Điểm Cửa Hàng
+          </span>
+
           <div>
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 bg-[#002782]/10 text-[#002782]">
-                <MapPin className="w-5 h-5 text-[#002782]" />
-              </div>
-              <div>
-                <h3 className="font-sans font-bold text-lg text-[#002782]">Địa Điểm Cửa Hàng</h3>
-                <p className="text-xs text-[#64748B]">Vị trí chính xác trên bản đồ</p>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="py-3 px-4 rounded-2xl bg-[#F5F7FB] border border-[#002782]/10">
-                <h4 className="font-sans text-lg font-bold text-[#002782]">
-                  {event.locationName}
-                </h4>
-                <p className="text-sm font-medium text-[#334155] leading-relaxed mt-1">
-                  {event.address}
-                </p>
-              </div>
-
-              {event.parkingNotes && (
-                <p className="text-xs text-[#64748B] leading-relaxed">
-                  {event.parkingNotes}
-                </p>
-              )}
-            </div>
+            <h4 className="font-sans text-base sm:text-lg font-bold text-[#002782]">
+              {event.locationName}
+            </h4>
+            <p className="text-sm sm:text-[15px] font-normal text-[#334155] leading-relaxed mt-1">
+              {event.address}
+            </p>
+            {event.parkingNotes && (
+              <p className="text-xs text-[#64748B] mt-1 italic">
+                {event.parkingNotes}
+              </p>
+            )}
           </div>
 
-          {/* CTA Xem chỉ đường */}
-          <div className="mt-8 pt-4 border-t border-[#002782]/10">
-            {event.googleMapsUrl ? (
+          {/* 4. HÀNH ĐỘNG: Nút Chỉ Đường duy nhất với icon Navigation để nhận biết thao tác */}
+          {event.googleMapsUrl && (
+            <div className="pt-3">
               <a
                 href={event.googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full min-h-[48px] px-5 py-3.5 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-md bg-[#002782] hover:bg-[#001d63] text-white focus:outline-none focus:ring-4 focus:ring-[#3EAFE8]/40 shadow-[#002782]/20 active:scale-[0.99]"
+                className="inline-flex items-center justify-center gap-2.5 min-h-[48px] px-8 py-3 rounded-full font-bold text-sm bg-[#002782] hover:bg-[#001d63] text-white transition-all shadow-sm hover:shadow-md focus:outline-none focus-visible:ring-4 focus-visible:ring-[#3EAFE8]/50 active:scale-[0.99]"
               >
                 <Navigation className="w-4 h-4 text-[#FF6403]" />
                 <span>Xem Chỉ Đường Trên Google Maps</span>
               </a>
-            ) : null}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

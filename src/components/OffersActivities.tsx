@@ -26,10 +26,11 @@ export const OffersActivities: React.FC<OffersActivitiesProps> = ({ config }) =>
   return (
     <section
       id="promotions"
+      tabIndex={-1}
       aria-label="Chương trình ưu đãi khai trương"
-      className="py-12 px-5 sm:px-8 max-w-4xl mx-auto font-sans"
+      className="py-6 sm:py-8 px-4 sm:px-6 max-w-2xl mx-auto font-sans outline-none focus:outline-none"
     >
-      <div className="text-center mb-8">
+      <div className="text-center mb-6">
         <span className="text-xs uppercase tracking-widest text-[#FF6403] font-bold">
           Dành Riêng Cho Ngày Khai Trương
         </span>

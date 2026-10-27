@@ -116,28 +116,39 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
       id="rsvp"
       tabIndex={-1}
       aria-label="Xác nhận tham dự sự kiện khai trương"
-      className="py-12 px-5 sm:px-8 max-w-3xl mx-auto font-sans outline-none focus:outline-none"
+      className="py-6 sm:py-8 px-4 sm:px-6 max-w-2xl mx-auto font-sans outline-none focus:outline-none"
     >
-      <div className="text-center mb-8">
-        <span className="text-xs uppercase tracking-widest text-[#FF6403] font-bold">
-          Đón Tiếp Chu Đáo
-        </span>
-        <h2 className="font-sans text-2xl sm:text-3xl font-bold mt-1 tracking-tight text-[#002782]">
-          Xác Nhận Tham Dự (RSVP)
-        </h2>
-        <div className="w-12 h-1 bg-[#FF6403] rounded-full mx-auto mt-3" />
-        {rsvp.deadline && (
-          <p className="text-xs sm:text-sm text-[#64748B] mt-2 font-medium">
-            Hạn phản hồi: {rsvp.deadline}
-          </p>
-        )}
-      </div>
+      {/* KHỐI HỒI ĐÁP THỐNG NHẤT (THE UNIFIED RSVP REPLY CARD) */}
+      <div className="relative bg-white rounded-2xl sm:rounded-3xl border border-[#002782]/15 shadow-[0_4px_30px_rgba(0,39,130,0.06)] p-6 sm:p-10 overflow-hidden text-[#0F172A]">
+        {/* Đường viền trang trí nội vi thanh lịch */}
+        <div className="pointer-events-none absolute inset-2.5 sm:inset-3.5 rounded-xl sm:rounded-2xl border border-[#002782]/10" />
 
-      <div className="p-6 sm:p-10 rounded-3xl transition-all shadow-invitation bg-white border border-[#002782]/10 text-[#0F172A]">
+        {/* Tiêu đề phiếu hồi đáp tích hợp */}
+        <div className="text-center mb-6">
+          <span className="text-xs uppercase tracking-wider text-[#64748B] font-semibold block">
+            R.S.V.P • Đón Tiếp Chu Đáo
+          </span>
+          <h2 className="font-sans text-2xl sm:text-3xl font-extrabold mt-1 tracking-tight text-[#002782]">
+            Xác Nhận Tham Dự
+          </h2>
+          {rsvp.deadline && (
+            <p className="text-xs sm:text-sm text-[#64748B] mt-1 font-medium">
+              Hạn phản hồi: {rsvp.deadline}
+            </p>
+          )}
+
+          {/* Đường phân cách ngắn tinh tế với điểm nhấn cam duy nhất */}
+          <div className="flex items-center justify-center gap-2.5 mt-4 mb-2">
+            <span className="h-[1px] w-12 bg-[#002782]/20" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF6403]" />
+            <span className="h-[1px] w-12 bg-[#002782]/20" />
+          </div>
+        </div>
+
         {submitResult?.success ? (
           /* Trạng thái thành công */
           <div className="text-center py-6 space-y-4">
-            <div className="w-16 h-16 bg-[#F0F7E6] text-[#609900] rounded-full flex items-center justify-center mx-auto mb-2 animate-bounce">
+            <div className="w-16 h-16 bg-[#F0F7E6] text-[#609900] rounded-full flex items-center justify-center mx-auto mb-2">
               <CalendarCheck className="w-8 h-8 text-[#05681E]" />
             </div>
 
@@ -255,10 +266,10 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
                       key={opt.id}
                       type="button"
                       onClick={() => setAttendance(opt.id as AttendanceStatus)}
-                      className={`p-3.5 rounded-2xl text-left border transition-all flex flex-col justify-between min-h-[58px] focus:outline-none focus:ring-2 ${
+                      className={`p-3.5 rounded-2xl text-left border flex flex-col justify-between min-h-[58px] focus:outline-none focus:ring-2 active:scale-[0.97] transition-[transform,background-color,border-color,box-shadow] duration-150 ease-out ${
                         selected
                           ? 'border-[#002782] bg-[#002782]/5 ring-2 ring-[#002782]/20'
-                          : 'border-[#E2E8F0] hover:bg-[#F8FAFC]'
+                          : 'border-[#E2E8F0] md:hover:bg-[#F8FAFC]'
                       }`}
                     >
                       <div className="flex items-center justify-between w-full">
@@ -376,7 +387,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full min-h-[48px] px-6 py-4 rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-2.5 shadow-md bg-[#FF6403] hover:bg-[#e65800] text-white focus:outline-none focus:ring-4 focus:ring-[#3EAFE8]/40 shadow-[#FF6403]/25 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full min-h-[48px] px-8 py-3.5 rounded-full font-bold text-sm sm:text-base transition-[transform,background-color,box-shadow] duration-150 ease-out flex items-center justify-center gap-2.5 shadow-sm md:hover:shadow bg-[#FF6403] md:hover:bg-[#e65800] text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-[#3EAFE8]/50 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? (
                 <>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface ScrollRevealProps {
   children: React.ReactNode;
@@ -11,58 +11,72 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   delayMs = 0,
   className = '',
 }) => {
-  const [isRevealed, setIsRevealed] = useState(false);
   const elementRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // 1. Fallback nếu chạy ở môi trường không có IntersectionObserver (SSR / Vitest / jsdom)
-    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
-      setIsRevealed(true);
+    const element = elementRef.current;
+    if (!element) return;
+
+    // 1. Nếu không hỗ trợ IntersectionObserver hoặc người dùng chọn giảm chuyển động:
+    // Tuyệt đối không thêm class ẩn (reveal-pending), để nội dung luôn hiển thị tự nhiên.
+    if (
+      typeof IntersectionObserver === 'undefined' ||
+      window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+    ) {
       return;
     }
 
-    // 2. Tôn trọng prefers-reduced-motion: hiển thị ngay lập tức không có hiệu ứng trễ
-    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-    if (prefersReducedMotion) {
-      setIsRevealed(true);
-      return;
+    // 2. Kiểm tra nếu phần tử đã nằm trong vùng nhìn thấy (ví dụ: màn 02 ngay sau khi mở thiệp):
+    // Thay vì bỏ qua (khiến màn đầu phẳng không chuyển động), ta kích hoạt entrance reveal một cách êm ái.
+    const rect = element.getBoundingClientRect();
+    const isInitiallyInView = rect.top < window.innerHeight && rect.bottom > 0;
+
+    if (isInitiallyInView) {
+      element.classList.add('reveal-pending');
+      const animFrame = requestAnimationFrame(() => {
+        element.classList.remove('reveal-pending');
+        element.classList.add('reveal-entered');
+      });
+      return () => cancelAnimationFrame(animFrame);
     }
 
-    const currentEl = elementRef.current;
-    if (!currentEl) return;
+    // 3. Với các màn còn ở phía dưới: ẩn nhẹ trước và quan sát khi cuộn tới
+    element.classList.add('reveal-pending');
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsRevealed(true);
-            // Quan trọng: Huỷ theo dõi ngay khi đã xuất hiện để không bao giờ lặp lại animation khi cuộn lên/xuống
-            observer.unobserve(entry.target);
-          }
-        });
+        if (entries.some((entry) => entry.isIntersecting)) {
+          element.classList.remove('reveal-pending');
+          element.classList.add('reveal-entered');
+          observer.disconnect();
+        }
       },
-      {
-        threshold: 0.08,
-        rootMargin: '0px 0px -40px 0px',
-      }
+      { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
     );
+    observer.observe(element);
 
-    observer.observe(currentEl);
+    const motionPreference = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    const handleMotionChange = () => {
+      if (motionPreference?.matches) {
+        element.classList.remove('reveal-pending');
+        element.classList.remove('reveal-entered');
+        observer.disconnect();
+      }
+    };
+    motionPreference?.addEventListener?.('change', handleMotionChange);
 
     return () => {
       observer.disconnect();
+      motionPreference?.removeEventListener?.('change', handleMotionChange);
+      element.classList.remove('reveal-pending');
     };
   }, []);
 
   return (
     <div
       ref={elementRef}
-      style={{
-        transitionDelay: isRevealed && delayMs > 0 ? `${delayMs}ms` : '0ms',
-      }}
-      className={`transition-all duration-700 ease-out ${
-        isRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-      } ${className}`}
+      style={{ '--reveal-delay': `${delayMs}ms` } as React.CSSProperties}
+      className={`section-reveal ${className}`}
     >
       {children}
     </div>

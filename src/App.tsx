@@ -1,19 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { invitationData } from './config/invitationContent';
 import { PreviewBanner } from './components/PreviewBanner';
-import { Cover } from './components/Cover';
-import { InvitationLetter } from './components/InvitationLetter';
-import { EventDetails } from './components/EventDetails';
-import { OffersActivities } from './components/OffersActivities';
-import { Gallery } from './components/Gallery';
+import { EditorialCover } from './components/EditorialCover';
+import { EditorialLetter } from './components/EditorialLetter';
+import { EditorialEventCard } from './components/EditorialEventCard';
+import { InvitationScreen, StorySection, ProductsSection, SpaceSection, ProgramSection, LocationSection, RsvpScreen } from './components/EditorialSections';
 import { RsvpSection } from './components/RsvpSection';
 import { CalendarShareSection } from './components/CalendarShareSection';
 import { Footer } from './components/Footer';
-import { ScrollReveal } from './components/ScrollReveal';
 
 export const App: React.FC = () => {
-  // Trạng thái mở thiệp: Mặc định mỗi lần tải trang LUÔN bắt đầu ở trạng thái đóng (false)
-  const [isOpen, setIsOpen] = useState(false);
+  // Trạng thái mở thiệp: Mặc định mỗi lần tải trang LUÔN bắt đầu ở trạng thái đóng (false).
+  // Hỗ trợ tham số ?open=1 chỉ trong chế độ xem trước (isPreviewMode) để phục vụ kiểm tra trực quan tự động
+  const [isOpen, setIsOpen] = useState(() => {
+    if (typeof window !== 'undefined' && invitationData.isPreviewMode) {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('open') === '1' || params.get('preview') === 'open';
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  });
+
+  const [isExitingCover, setIsExitingCover] = useState(false);
 
   // Lưu trữ hash (nếu người dùng truy cập trực tiếp qua link như /#rsvp hoặc /#event-details)
   // để điều hướng tới đích CHỈ SAU KHI khách chủ động nhấn mở thiệp
@@ -42,8 +53,6 @@ export const App: React.FC = () => {
   }, [isOpen]);
 
   const handleOpenInvitation = () => {
-    setIsOpen(true);
-
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
@@ -53,36 +62,60 @@ export const App: React.FC = () => {
     const targetId = targetHash ? targetHash.replace('#', '') : 'invitation-letter';
     pendingHashRef.current = null;
 
-    // Chờ DOM mount toàn bộ nội dung chính trước khi cuộn
-    const delay = prefersReducedMotion ? 20 : 120;
-    setTimeout(() => {
-      const targetElement =
-        document.getElementById(targetId) ||
-        document.getElementById('invitation-letter') ||
-        document.getElementById('main-invitation-content');
+    if (prefersReducedMotion) {
+      setIsOpen(true);
+      setTimeout(() => {
+        const targetElement =
+          document.getElementById(targetId) ||
+          document.getElementById('invitation-letter') ||
+          document.getElementById('main-invitation-content');
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'auto', block: 'start' });
+          targetElement.focus?.();
+        }
+      }, 10);
+      return;
+    }
 
-      if (targetElement) {
-        targetElement.scrollIntoView({
-          behavior: prefersReducedMotion ? 'auto' : 'smooth',
-          block: 'start',
-        });
-        // Hỗ trợ công nghệ trợ năng: chuyển focus an toàn vào vùng nội dung đã mở
-        targetElement.focus?.();
-      }
-    }, delay);
+    // 1. Phản hồi bấm nút ngay lập tức và kích hoạt hiệu ứng rời đi của bìa
+    setIsExitingCover(true);
+
+    // 2. Chuyển đổi sang nội dung thư mời sau 200ms exit transition
+    setTimeout(() => {
+      setIsOpen(true);
+      setIsExitingCover(false);
+
+      // Chuyển focus và cuộn mượt đến phần tử đích sau khi DOM đã mount
+      setTimeout(() => {
+        const targetElement =
+          document.getElementById(targetId) ||
+          document.getElementById('invitation-letter') ||
+          document.getElementById('main-invitation-content');
+
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+          targetElement.focus?.();
+        }
+      }, 40);
+    }, 200);
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7FB] text-[#0F172A] font-sans selection:bg-[#3EAFE8]/30 selection:text-[#002782]">
-      {/* 1. Banner xem trước và thông báo nhận diện thương hiệu (chỉ hiển thị ở chế độ xem trước) */}
-      <PreviewBanner config={invitationData} />
+    <div className="invitation-page min-h-screen relative text-[#0F172A] font-sans selection:bg-[#3EAFE8]/30 selection:text-[#002782] overflow-x-hidden">
+      <div className="relative z-10">
+        {/* 1. Banner xem trước và thông báo nhận diện thương hiệu (chỉ hiển thị ở chế độ xem trước) */}
+        <PreviewBanner config={invitationData} />
 
-      {/* 2. Bìa thiệp mời tương tác (Interactive Cover Envelope) */}
-      <Cover
-        config={invitationData}
-        isOpen={isOpen}
-        onOpen={handleOpenInvitation}
-      />
+        {/* 2. Bìa thiệp mời tương tác (Interactive Cover Envelope) */}
+        <EditorialCover
+          config={invitationData}
+          isOpen={isOpen}
+          isExiting={isExitingCover}
+          onOpen={handleOpenInvitation}
+        />
 
       {/* 
         3. Nội dung chính và Chân trang:
@@ -99,41 +132,24 @@ export const App: React.FC = () => {
             aria-label="Nội dung chi tiết thư mời khai trương Mekong Meris"
             className="outline-none focus:outline-none"
           >
-            {/* Lời mời trân trọng & Cá nhân hóa tên khách */}
-            <ScrollReveal delayMs={50}>
-              <InvitationLetter config={invitationData} />
-            </ScrollReveal>
-
-            {/* Khối thông tin quan trọng: Ngày, Thứ (Asia/Ho_Chi_Minh), Giờ, Địa chỉ, Bản đồ */}
-            <ScrollReveal delayMs={100}>
-              <EventDetails config={invitationData} />
-            </ScrollReveal>
-
-            {/* Ưu đãi & Hoạt động (tự động ẩn nếu chưa có thông tin xác nhận) */}
-            <ScrollReveal delayMs={100}>
-              <OffersActivities config={invitationData} />
-            </ScrollReveal>
-
-            {/* Hình ảnh mặt tiền & không gian (bố cục chữ có chủ đích trang trọng khi chưa có ảnh) */}
-            <ScrollReveal delayMs={100}>
-              <Gallery config={invitationData} />
-            </ScrollReveal>
-
-            {/* Xác nhận tham dự (RSVP) kết nối MongoDB Atlas */}
-            <ScrollReveal delayMs={100}>
-              <RsvpSection config={invitationData} />
-            </ScrollReveal>
-
-            {/* Thêm vào lịch (.ics) và Chia sẻ Zalo/Facebook/Mã QR */}
-            <ScrollReveal delayMs={100}>
-              <CalendarShareSection config={invitationData} />
-            </ScrollReveal>
+            <InvitationScreen>
+              <EditorialLetter config={invitationData} />
+              <EditorialEventCard config={invitationData} />
+            </InvitationScreen>
+            <StorySection />
+            <ProductsSection />
+            <SpaceSection />
+            <ProgramSection />
+            <LocationSection />
+            <RsvpScreen><RsvpSection config={invitationData} /></RsvpScreen>
+            <div className="editorial-extras"><CalendarShareSection config={invitationData} /></div>
           </main>
 
           {/* 4. Chân trang chính thức (chỉ hiển thị cùng nội dung thiệp đã mở) */}
           <Footer config={invitationData} />
         </>
       )}
+      </div>
     </div>
   );
 };
