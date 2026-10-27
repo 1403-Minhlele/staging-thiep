@@ -26,8 +26,10 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['"Montserrat"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['"Montserrat"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'],
         brand: ['"Montserrat"', 'sans-serif'],
+        editorial: ['"Noto Serif"', '"Times New Roman"', '"Liberation Serif"', 'serif'],
+        handwriting: ['"Caveat"', 'cursive'],
       },
       boxShadow: {
         'invitation': '0 12px 36px -4px rgba(0, 39, 130, 0.08), 0 4px 12px -2px rgba(0, 39, 130, 0.04)',

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import App from '../src/App';
+import { ScrollReveal } from '../src/components/ScrollReveal';
 
 describe('Interactive Envelope Opening Flow & Audio Removal', () => {
   beforeEach(() => {
@@ -51,7 +52,7 @@ describe('Interactive Envelope Opening Flow & Audio Removal', () => {
     expect(screen.queryByLabelText(/Xác nhận tham dự sự kiện khai trương/i)).toBeNull();
   });
 
-  it('opens invitation when guest clicks "Chạm Để Mở Thiệp", rendering main content, sections and footer', async () => {
+  it('opens invitation when guest clicks "Chạm Để Mở Thiệp", without footer or page counters', async () => {
     render(<App />);
 
     const openButton = screen.getByRole('button', { name: /Chạm Để Mở Thiệp/i });
@@ -69,10 +70,12 @@ describe('Interactive Envelope Opening Flow & Audio Removal', () => {
     expect(screen.getByLabelText(/Thư mời từ Mekong Meris/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Thông tin thời gian và địa điểm/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Xác nhận tham dự sự kiện khai trương/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Thông tin chân trang Mekong Meris/i)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/Thông tin chân trang Mekong Meris/i)).toBeNull();
+    expect(document.querySelector('.editorial-number')).toBeNull();
 
-    // Verify Cover transitions to opened state with confirmation badge
-    expect(screen.getByText(/Thư mời đã được mở/i)).toBeInTheDocument();
+    // The editorial cover gives way to the invitation after opening.
+    expect(screen.queryByRole('button', { name: /Chạm Để Mở Thiệp/i })).toBeNull();
+    expect(document.getElementById('invitation-letter')).toBeInTheDocument();
 
     // Verify still NO audio element after opening
     expect(document.querySelector('audio')).toBeNull();
@@ -94,6 +97,80 @@ describe('Interactive Envelope Opening Flow & Audio Removal', () => {
     await waitFor(() => {
       const rsvpSection = document.getElementById('rsvp');
       expect(rsvpSection).toBeInTheDocument();
+    });
+  });
+
+  it('can close the invitation and return focus to the cover to replay opening', async () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /Chạm Để Mở Thiệp/i }));
+    await waitFor(() => expect(document.querySelector('main')).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('button', { name: /Xem lại bìa thiệp/i }));
+    expect(document.querySelector('main')).toBeNull();
+    await waitFor(() => expect(screen.getByRole('button', { name: /Chạm Để Mở Thiệp/i })).toHaveFocus());
+    fireEvent.click(screen.getByRole('button', { name: /Chạm Để Mở Thiệp/i }));
+    await waitFor(() => expect(document.querySelector('main')).toBeInTheDocument());
+  });
+
+  it('safely renders ScrollReveal content visibly when IntersectionObserver is not available', () => {
+    const originalObserver = window.IntersectionObserver;
+    // @ts-expect-error simulate missing IntersectionObserver
+    delete window.IntersectionObserver;
+
+    const { container } = render(
+      <ScrollReveal>
+        <p>Visible Content Fallback</p>
+      </ScrollReveal>
+    );
+
+    const wrapper = container.querySelector('.section-reveal');
+    expect(wrapper).not.toBeNull();
+    // Must NOT be stuck in reveal-pending
+    expect(wrapper).not.toHaveClass('reveal-pending');
+    expect(screen.getByText('Visible Content Fallback')).toBeInTheDocument();
+
+    window.IntersectionObserver = originalObserver;
+  });
+
+  it('renders ScrollReveal content visibly without delay when prefers-reduced-motion is active', () => {
+    const originalMatchMedia = window.matchMedia;
+    window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+      matches: query.includes('prefers-reduced-motion: reduce'),
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+
+    const { container } = render(
+      <ScrollReveal>
+        <p>Reduced Motion Content</p>
+      </ScrollReveal>
+    );
+
+    const wrapper = container.querySelector('.section-reveal');
+    expect(wrapper).not.toBeNull();
+    expect(wrapper).not.toHaveClass('reveal-pending');
+    expect(screen.getByText('Reduced Motion Content')).toBeInTheDocument();
+
+    window.matchMedia = originalMatchMedia;
+  });
+
+  it('triggers exit animation on Cover before main content mounts', async () => {
+    render(<App />);
+
+    const openButton = screen.getByRole('button', { name: /Chạm Để Mở Thiệp/i });
+    fireEvent.click(openButton);
+
+    // Cover enters exiting state
+    const coverSection = document.querySelector('.cover-panel');
+    expect(coverSection).toHaveClass('cover-exiting');
+
+    // Wait for main content to mount
+    await waitFor(() => {
+      expect(document.getElementById('main-invitation-content')).toBeInTheDocument();
     });
   });
 });

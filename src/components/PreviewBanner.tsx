@@ -19,7 +19,7 @@ export const PreviewBanner: React.FC<PreviewBannerProps> = ({ config }) => {
         <div className="flex items-start gap-2.5">
           <AlertCircle className="w-4 h-4 text-[#FF6403] shrink-0 mt-0.5" />
           <div>
-            <div className="font-semibold text-white flex items-center gap-2">
+            <div className="font-semibold text-white flex flex-wrap items-center gap-1.5">
               <span>BẢN XEM TRƯỚC NỘI BỘ (STAGING)</span>
               <span className="text-[10px] bg-[#FF6403] text-white px-2 py-0.5 rounded-full uppercase tracking-wider font-semibold">
                 Mekong Meris Brand

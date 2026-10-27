@@ -22,6 +22,7 @@ export interface PhotoItem {
   url: string;
   alt: string;
   caption?: string;
+  isMain?: boolean;
   isFacade?: boolean;
 }
 
@@ -65,6 +66,7 @@ export interface InvitationConfig {
     address: string;
     isAddressPlaceholder: boolean;
 
+    eventUrl?: string; // Để rỗng đến khi liên kết sự kiện được xác nhận.
     googleMapsUrl: string;
     isMapsUrlPlaceholder: boolean;
 
@@ -136,7 +138,7 @@ export const invitationData: InvitationConfig = {
     logoUrl: '/images/logo-mekongmeris-primary.svg',
     logoWhiteUrl: '/images/logo-mekongmeris-white.svg',
     logoVerticalUrl: '/images/logo-mekongmeris-vertical.svg',
-    hostName: 'Mekong Meris',
+    hostName: 'Ban lãnh đạo Mekong Meris',
     pronoun: 'Mekong Meris',
     desiredStyle: 'Sang trọng theo bộ nhận diện chính thức Mekong Meris',
     websiteUrl: 'https://mekongmeris.com/',
@@ -145,12 +147,13 @@ export const invitationData: InvitationConfig = {
   // 2. Sự kiện khai trương
   event: {
     id: 'grand-opening-mekongmeris-2026',
+    eventUrl: '',
     coverTitle: 'THƯ MỜI KHAI TRƯƠNG',
     dateIso: '2026-11-07',
     dateDisplayFallback: '07/11/2026',
     isDatePlaceholder: false,
 
-    startTime: '09:00',
+    startTime: '08:30',
     // Chưa chốt giờ kết thúc toàn bộ sự kiện; khung 20:00–22:00 chỉ là dự phòng.
     isTimePlaceholder: false,
 
@@ -191,11 +194,30 @@ export const invitationData: InvitationConfig = {
     items: [],
   },
 
-  // 5. Hình ảnh
+  // 5. Hình ảnh sản phẩm cửa hàng (Dùng đúng 3 ảnh sản phẩm thật đã cung cấp)
   gallery: {
-    enabled: false, // Chưa có ảnh thật trong phiếu; dùng bố cục typography có chủ đích
-    sectionTitle: 'Không Gian Chào Đón',
-    photos: [],
+    enabled: true,
+    sectionTitle: 'Sản Phẩm Cửa Hàng',
+    photos: [
+      {
+        url: '/images/products/sashimi-ca-ro-phi.jpg',
+        alt: 'Sashimi cá rô phi Mekong Meris',
+        caption: 'Sashimi cá rô phi',
+        isMain: true,
+      },
+      {
+        url: '/images/products/tom-tam-bot-dua.jpg',
+        alt: 'Tôm tẩm bột dừa Mekong Meris',
+        caption: 'Tôm tẩm bột dừa',
+        isMain: false,
+      },
+      {
+        url: '/images/products/dimsum.jpg',
+        alt: 'Dimsum Mekong Meris',
+        caption: 'Dimsum',
+        isMain: false,
+      },
+    ],
   },
 
   // 6. Xác nhận tham dự (RSVP)

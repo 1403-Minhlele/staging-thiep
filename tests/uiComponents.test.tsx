@@ -5,6 +5,8 @@ import { EventDetails } from '../src/components/EventDetails';
 import { InvitationLetter } from '../src/components/InvitationLetter';
 import { PreviewBanner } from '../src/components/PreviewBanner';
 import { RsvpSection } from '../src/components/RsvpSection';
+import { CalendarShareSection } from '../src/components/CalendarShareSection';
+import { Gallery } from '../src/components/Gallery';
 import { Footer } from '../src/components/Footer';
 import { invitationData } from '../src/config/invitationContent';
 
@@ -119,5 +121,57 @@ describe('UI Components & User Journey Flow', () => {
 
     // 5. Canonical URL của thiệp vẫn giữ nguyên https://thiepmoi.mekongmeris.com/
     expect(invitationData.deployment.canonicalUrl).toBe('https://thiepmoi.mekongmeris.com/');
+  });
+
+  it('renders CalendarShareSection with primary Add to Calendar action and secondary share buttons', () => {
+    render(<CalendarShareSection config={invitationData} />);
+
+    // Primary action
+    const calBtn = screen.getByRole('button', { name: /Thêm Sự Kiện Vào Lịch \(\.ics\)/i });
+    expect(calBtn).toBeInTheDocument();
+
+    // Secondary actions
+    expect(screen.getByRole('button', { name: /Gửi qua Zalo/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Facebook/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Sao chép link/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Xem mã QR/i })).toBeInTheDocument();
+  });
+
+  it('renders Gallery with no artificial card when no photos exist in production mode', () => {
+    const prodConfig = {
+      ...invitationData,
+      isPreviewMode: false,
+      gallery: { ...invitationData.gallery, enabled: false, photos: [] },
+    };
+    const { container } = render(<Gallery config={prodConfig} />);
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('renders Gallery with 3 real product photos (Sashimi cá rô phi, Tôm tẩm bột dừa, Dimsum) without menu claims', () => {
+    render(<Gallery config={invitationData} />);
+
+    // Verify Section Title
+    expect(screen.getByText('Sản Phẩm Cửa Hàng')).toBeInTheDocument();
+
+    // Verify 3 real product images and alt texts
+    const sashimiImg = screen.getByAltText('Sashimi cá rô phi Mekong Meris');
+    expect(sashimiImg).toBeInTheDocument();
+    expect(sashimiImg).toHaveAttribute('src', '/images/products/sashimi-ca-ro-phi.jpg');
+
+    const shrimpImg = screen.getByAltText('Tôm tẩm bột dừa Mekong Meris');
+    expect(shrimpImg).toBeInTheDocument();
+    expect(shrimpImg).toHaveAttribute('src', '/images/products/tom-tam-bot-dua.jpg');
+
+    const dimsumImg = screen.getByAltText('Dimsum Mekong Meris');
+    expect(dimsumImg).toBeInTheDocument();
+    expect(dimsumImg).toHaveAttribute('src', '/images/products/dimsum.jpg');
+
+    // Verify product captions only show product names without promotional claims
+    expect(screen.getByText('Sashimi cá rô phi')).toBeInTheDocument();
+    expect(screen.getByText('Tôm tẩm bột dừa')).toBeInTheDocument();
+    expect(screen.getByText('Dimsum')).toBeInTheDocument();
+
+    // Ensure no placeholder message remains
+    expect(screen.queryByText(/đang tạm ẩn/i)).toBeNull();
   });
 });

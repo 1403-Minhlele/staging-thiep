@@ -6,6 +6,7 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
   }
 
   body {
@@ -15,6 +16,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   /* Accessibility focus styles */
@@ -24,7 +26,44 @@
   }
 }
 
+/* Nền trừu tượng gợi đường sông: không dùng ảnh ngoài chưa được duyệt. */
+.invitation-page {
+  background-color: #f6f8f5;
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,.22), rgba(248,250,252,.72) 75%, #f6f8f5),
+    radial-gradient(ellipse 37% 24% at 6% 18%, rgba(62,175,232,.23), transparent 86%),
+    radial-gradient(ellipse 35% 26% at 94% 39%, rgba(96,153,0,.13), transparent 88%),
+    radial-gradient(ellipse 43% 20% at 12% 69%, rgba(0,39,130,.12), transparent 89%),
+    radial-gradient(ellipse 29% 18% at 90% 85%, rgba(62,175,232,.16), transparent 90%);
+  background-repeat: no-repeat;
+}
+
+/* Giữ nguyên bố cục; chỉ bổ sung nét nước rất nhẹ ở khoảng trống ngoài thiệp. */
+.invitation-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .38;
+  background: repeating-radial-gradient(ellipse 62% 12% at 25% 23%, transparent 0 68px, rgba(62,175,232,.10) 70px 72px, transparent 74px 130px);
+  mask-image: linear-gradient(180deg, #000, transparent 75%);
+}
+
+.section-reveal.reveal-pending {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  pointer-events: none;
+}
+.section-reveal.reveal-entered {
+  animation: section-arrive 609ms cubic-bezier(0.23, 1, 0.32, 1) var(--reveal-delay, 0ms) both;
+}
+@keyframes section-arrive {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
 /* Hiệu ứng phong thư 3D chân thực Mekong Meris */
+
 .envelope-perspective {
   perspective: 1200px;
 }
@@ -65,6 +104,13 @@
 
 /* Tôn trọng tùy chọn giảm chuyển động của người dùng */
 @media (prefers-reduced-motion: reduce) {
+  .section-reveal.reveal-pending,
+  .section-reveal.reveal-entered {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
   *,
   ::before,
   ::after {
