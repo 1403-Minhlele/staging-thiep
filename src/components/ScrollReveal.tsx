@@ -17,58 +17,47 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
     const element = elementRef.current;
     if (!element) return;
 
-    // 1. Nếu không hỗ trợ IntersectionObserver hoặc người dùng chọn giảm chuyển động:
-    // Tuyệt đối không thêm class ẩn (reveal-pending), để nội dung luôn hiển thị tự nhiên.
-    if (
-      typeof IntersectionObserver === 'undefined' ||
-      window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
-    ) {
-      return;
-    }
-
-    // 2. Kiểm tra nếu phần tử đã nằm trong vùng nhìn thấy (ví dụ: màn 02 ngay sau khi mở thiệp):
-    // Thay vì bỏ qua (khiến màn đầu phẳng không chuyển động), ta kích hoạt entrance reveal một cách êm ái.
-    const rect = element.getBoundingClientRect();
-    const isInitiallyInView = rect.top < window.innerHeight && rect.bottom > 0;
-
-    if (isInitiallyInView) {
-      element.classList.add('reveal-pending');
-      const animFrame = requestAnimationFrame(() => {
-        element.classList.remove('reveal-pending');
-        element.classList.add('reveal-entered');
-      });
-      return () => cancelAnimationFrame(animFrame);
-    }
-
-    // 3. Với các màn còn ở phía dưới: ẩn nhẹ trước và quan sát khi cuộn tới
-    element.classList.add('reveal-pending');
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          element.classList.remove('reveal-pending');
-          element.classList.add('reveal-entered');
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
-    );
-    observer.observe(element);
-
     const motionPreference = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (typeof IntersectionObserver === 'undefined' || motionPreference?.matches) return;
+
+    let frame: number | null = null;
+    let entered = false;
+    const reveal = () => {
+      if (entered) return;
+      entered = true;
+      element.classList.remove('reveal-pending');
+      element.classList.add('reveal-entered');
+      observer.disconnect();
+    };
+    // Wait until the panel is inside the reading area, not merely touching
+    // the bottom edge. Each panel runs once; later panels remain pending.
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some(entry => entry.isIntersecting)) reveal();
+    }, { threshold: 0.08, rootMargin: '0px 0px -18% 0px' });
+    element.classList.add('reveal-pending');
+    const rect = element.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.75 && rect.bottom > 0) {
+      frame = requestAnimationFrame(reveal);
+    } else {
+      observer.observe(element);
+    }
+
     const handleMotionChange = () => {
       if (motionPreference?.matches) {
-        element.classList.remove('reveal-pending');
-        element.classList.remove('reveal-entered');
+        if (frame !== null) cancelAnimationFrame(frame);
+        element.classList.remove('reveal-pending', 'reveal-entered');
         observer.disconnect();
       }
     };
+    // Keyboard and deep-link focus must never remain inside an invisible panel.
+    element.addEventListener('focusin', reveal);
     motionPreference?.addEventListener?.('change', handleMotionChange);
-
     return () => {
+      if (frame !== null) cancelAnimationFrame(frame);
       observer.disconnect();
+      element.removeEventListener('focusin', reveal);
       motionPreference?.removeEventListener?.('change', handleMotionChange);
-      element.classList.remove('reveal-pending');
+      element.classList.remove('reveal-pending', 'reveal-entered');
     };
   }, []);
 

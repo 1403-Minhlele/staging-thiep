@@ -18,7 +18,7 @@ export const ProgramTimeline: React.FC<ProgramTimelineProps> = ({ items }) => {
         list.classList.add('timeline-settled');
         observer.disconnect();
       }
-    }, { threshold: 0.12, rootMargin: '0px 0px -32px 0px' });
+    }, { threshold: 0.25, rootMargin: '0px 0px -15% 0px' });
     observer.observe(list);
     const stopMotion = () => {
       if (preference?.matches) {
@@ -34,7 +34,7 @@ export const ProgramTimeline: React.FC<ProgramTimelineProps> = ({ items }) => {
   }, []);
 
   return <ol ref={listRef} className="program-list">
-    {items.map(([title, description], index) => <li key={title} style={{ '--agenda-delay': `${index * 100}ms` } as React.CSSProperties}>
+    {items.map(([title, description], index) => <li key={title} style={{ '--agenda-delay': `${index * 170}ms` } as React.CSSProperties}>
       <span className="program-index">{String(index + 1).padStart(2, '0')}</span>
       <div><strong>{title}</strong><p>{description}</p></div>
     </li>)}

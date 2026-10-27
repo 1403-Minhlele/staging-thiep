@@ -7,6 +7,7 @@ import { EditorialEventCard } from './components/EditorialEventCard';
 import { InvitationScreen, StorySection, ProductsSection, SpaceSection, ProgramSection, LocationSection, RsvpScreen } from './components/EditorialSections';
 import { RsvpSection } from './components/RsvpSection';
 import { CalendarShareSection } from './components/CalendarShareSection';
+import { ScrollReveal } from './components/ScrollReveal';
 
 export const App: React.FC = () => {
   // Trạng thái mở thiệp: Mặc định mỗi lần tải trang LUÔN bắt đầu ở trạng thái đóng (false).
@@ -149,7 +150,7 @@ export const App: React.FC = () => {
             <LocationSection />
             <RsvpScreen><RsvpSection config={invitationData} /></RsvpScreen>
             <div className="editorial-extras">
-              <CalendarShareSection config={invitationData} />
+              <ScrollReveal><CalendarShareSection config={invitationData} /></ScrollReveal>
               <button type="button" className="invitation-replay" onClick={handleReplayInvitation}>Xem lại bìa thiệp</button>
             </div>
           </main>
