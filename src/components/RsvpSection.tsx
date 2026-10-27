@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle2, AlertCircle, Send, Users, ShieldCheck, RefreshCw, CalendarCheck } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Send, ShieldCheck, RefreshCw, CalendarCheck } from 'lucide-react';
 import { InvitationConfig } from '../config/invitationContent';
 import { AttendanceStatus, validateRsvpInput } from '../utils/validation';
 
@@ -24,7 +24,8 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
   // Form State
   const [guestName, setGuestName] = useState('');
   const [attendance, setAttendance] = useState<AttendanceStatus>('yes');
-  const [partySize, setPartySize] = useState<number>(1);
+  // No party-size control: each attending response represents one guest.
+  const partySize = 1;
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [honeypot, setHoneypot] = useState(''); // Website spam honeypot
@@ -290,47 +291,6 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
                 </p>
               )}
             </div>
-
-            {/* 3. Số lượng người tham dự (Chỉ hiện khi chọn Có hoặc Chưa chắc) */}
-            {attendance !== 'no' && (
-              <div className="p-4 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0]">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label
-                      htmlFor="partySize"
-                      className="block text-xs sm:text-sm font-bold text-[#002782] flex items-center gap-1.5"
-                    >
-                      <Users className="w-4 h-4 text-[#002782]" />
-                      <span>Tổng số người tham dự (gồm Quý khách)</span>
-                    </label>
-                    <span className="text-[11px] text-[#64748B]">
-                      Tối đa {rsvp.maxPartySize} người để đảm bảo chỗ ngồi chu đáo
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <select
-                      id="partySize"
-                      value={partySize}
-                      onChange={(e) => setPartySize(Number(e.target.value))}
-                      className="px-3 py-2 rounded-xl border border-[#CBD5E1] bg-white font-bold text-sm text-[#002782] outline-none focus:ring-2 focus:ring-[#3EAFE8]/40"
-                    >
-                      {Array.from({ length: rsvp.maxPartySize }, (_, i) => i + 1).map((n) => (
-                        <option key={n} value={n}>
-                          {n} người {n === 1 ? '(chỉ mình tôi)' : `(tôi + ${n - 1})`}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                {clientErrors.partySize && (
-                  <p className="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-medium">
-                    <AlertCircle className="w-3.5 h-3.5" />
-                    <span>{clientErrors.partySize}</span>
-                  </p>
-                )}
-              </div>
-            )}
 
             {/* 4. Số điện thoại (Chỉ bắt buộc nếu config yêu cầu) */}
             <div>

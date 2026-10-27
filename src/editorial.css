@@ -640,7 +640,6 @@
 .section-reveal.reveal-entered .story-copy,
 .section-reveal.reveal-entered .product-stack,
 .section-reveal.reveal-entered .space-grid,
-.section-reveal.reveal-entered .program-list,
 .section-reveal.reveal-entered .location-card,
 .section-reveal.reveal-entered .editorial-event-card {
   animation: section-arrive 609ms var(--ease-out-cubic) 101.5ms both;
@@ -761,7 +760,6 @@ html {
   .section-reveal.reveal-entered .story-copy,
   .section-reveal.reveal-entered .product-stack,
   .section-reveal.reveal-entered .space-grid,
-  .section-reveal.reveal-entered .program-list,
   .section-reveal.reveal-entered .location-card,
   .section-reveal.reveal-entered .editorial-event-card {
     animation: none !important;

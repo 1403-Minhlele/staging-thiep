@@ -1,6 +1,7 @@
 import React from 'react';
 import { invitationData } from '../config/invitationContent';
 import { ScrollReveal } from './ScrollReveal';
+import { ProgramTimeline } from './ProgramTimeline';
 
 const Header: React.FC = () => (
   <div className="editorial-kicker"><span><i /> MEKONG MERIS</span><span>GRAND OPENING</span></div>
@@ -62,17 +63,7 @@ export const ProgramSection: React.FC = () => (
   <ScrollReveal><Frame className="program-panel">
     <Title eyebrow="THE GRAND OPENING EXPERIENCE" first="Hẹn gặp tại" second="ngày khai trương." />
     <div className="program-start"><span>BẮT ĐẦU</span><strong>{invitationData.event.startTime} · 07/11/2026</strong></div>
-    <div className="event-action">
-      {invitationData.event.eventUrl ? (
-        <a className="editorial-cta" href={invitationData.event.eventUrl} target="_blank" rel="noopener noreferrer">XEM SỰ KIỆN</a>
-      ) : (
-        <>
-          <button className="editorial-cta" type="button" disabled aria-describedby="event-link-pending">XEM SỰ KIỆN</button>
-          <p id="event-link-pending">Liên kết sự kiện sẽ được cập nhật sau.</p>
-        </>
-      )}
-    </div>
-    <ol className="program-list">{agenda.map(([title, description], index) => <li key={title}><span className="program-index">{String(index + 1).padStart(2, '0')}</span><div><strong>{title}</strong><p>{description}</p></div></li>)}</ol>
+    <ProgramTimeline items={agenda} />
     <div className="program-image"><img src="/images/products/tom-tam-bot-dua.jpg" alt="Món tôm tẩm bột dừa Mekong Meris" loading="lazy" /><span>Trân trọng đón tiếp Quý khách.</span></div>
   </Frame></ScrollReveal>
 );
