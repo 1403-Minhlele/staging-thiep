@@ -7,7 +7,6 @@ import { EditorialEventCard } from './components/EditorialEventCard';
 import { InvitationScreen, StorySection, ProductsSection, SpaceSection, ProgramSection, LocationSection, RsvpScreen } from './components/EditorialSections';
 import { RsvpSection } from './components/RsvpSection';
 import { CalendarShareSection } from './components/CalendarShareSection';
-import { Footer } from './components/Footer';
 
 export const App: React.FC = () => {
   // Trạng thái mở thiệp: Mặc định mỗi lần tải trang LUÔN bắt đầu ở trạng thái đóng (false).
@@ -52,55 +51,62 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, [isOpen]);
 
-  const handleOpenInvitation = () => {
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+  const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const focusFrameRef = useRef<number | null>(null);
+  const replayFocusRef = useRef(false);
 
-    // Lấy mục tiêu cần điều hướng đến: hash đã lưu hoặc đầu thư mời
-    const targetHash = pendingHashRef.current;
-    const targetId = targetHash ? targetHash.replace('#', '') : 'invitation-letter';
-    pendingHashRef.current = null;
+  useEffect(() => () => {
+    if (openTimerRef.current !== null) clearTimeout(openTimerRef.current);
+    if (focusFrameRef.current !== null) cancelAnimationFrame(focusFrameRef.current);
+  }, []);
 
-    if (prefersReducedMotion) {
-      setIsOpen(true);
-      setTimeout(() => {
-        const targetElement =
-          document.getElementById(targetId) ||
-          document.getElementById('invitation-letter') ||
-          document.getElementById('main-invitation-content');
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'auto', block: 'start' });
-          targetElement.focus?.();
-        }
-      }, 10);
+  useEffect(() => {
+    if (!isOpen) {
+      if (replayFocusRef.current) {
+        replayFocusRef.current = false;
+        focusFrameRef.current = requestAnimationFrame(() => {
+          document.getElementById('open-invitation')?.focus({ preventScroll: true });
+        });
+      }
       return;
     }
+    const targetId = pendingHashRef.current?.slice(1) || 'invitation-letter';
+    pendingHashRef.current = null;
+    focusFrameRef.current = requestAnimationFrame(() => {
+      const target = document.getElementById(targetId) || document.getElementById('invitation-letter');
+      target?.scrollIntoView({ behavior: 'auto', block: 'start' });
+      target?.focus({ preventScroll: true });
+    });
+    return () => {
+      if (focusFrameRef.current !== null) cancelAnimationFrame(focusFrameRef.current);
+    };
+  }, [isOpen]);
 
-    // 1. Phản hồi bấm nút ngay lập tức và kích hoạt hiệu ứng rời đi của bìa
+  const handleOpenInvitation = () => {
+    if (isExitingCover || isOpen) return;
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    if (reducedMotion) {
+      setIsOpen(true);
+      return;
+    }
     setIsExitingCover(true);
-
-    // 2. Chuyển đổi sang nội dung thư mời sau 200ms exit transition
-    setTimeout(() => {
+    openTimerRef.current = setTimeout(() => {
       setIsOpen(true);
       setIsExitingCover(false);
+      openTimerRef.current = null;
+    }, 620);
+  };
 
-      // Chuyển focus và cuộn mượt đến phần tử đích sau khi DOM đã mount
-      setTimeout(() => {
-        const targetElement =
-          document.getElementById(targetId) ||
-          document.getElementById('invitation-letter') ||
-          document.getElementById('main-invitation-content');
-
-        if (targetElement) {
-          targetElement.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-          });
-          targetElement.focus?.();
-        }
-      }, 40);
-    }, 200);
+  const handleReplayInvitation = () => {
+    if (openTimerRef.current !== null) clearTimeout(openTimerRef.current);
+    if (focusFrameRef.current !== null) cancelAnimationFrame(focusFrameRef.current);
+    pendingHashRef.current = null;
+    // Clear the now-obsolete section anchor without adding a history entry.
+    if (window.location.hash) window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    replayFocusRef.current = true;
+    setIsOpen(false);
+    setIsExitingCover(false);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   return (
@@ -118,7 +124,7 @@ export const App: React.FC = () => {
         />
 
       {/* 
-        3. Nội dung chính và Chân trang:
+        3. Nội dung chính:
         TUYỆT ĐỐI CHỈ RENDER KHI THIỆP ĐÃ ĐƯỢC MỞ (isOpen = true).
         Khi thiệp chưa mở, toàn bộ phần tử bên dưới hoàn toàn không tồn tại trong DOM,
         ngăn chặn triệt để việc cuộn trang, di chuyển phím Tab, đọc màn hình, tìm kiếm nội dung,
@@ -142,11 +148,11 @@ export const App: React.FC = () => {
             <ProgramSection />
             <LocationSection />
             <RsvpScreen><RsvpSection config={invitationData} /></RsvpScreen>
-            <div className="editorial-extras"><CalendarShareSection config={invitationData} /></div>
+            <div className="editorial-extras">
+              <CalendarShareSection config={invitationData} />
+              <button type="button" className="invitation-replay" onClick={handleReplayInvitation}>Xem lại bìa thiệp</button>
+            </div>
           </main>
-
-          {/* 4. Chân trang chính thức (chỉ hiển thị cùng nội dung thiệp đã mở) */}
-          <Footer config={invitationData} />
         </>
       )}
       </div>

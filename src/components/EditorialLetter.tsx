@@ -12,7 +12,7 @@ export const EditorialLetter: React.FC<{ config: InvitationConfig }> = ({ config
   return <section id="invitation-letter" tabIndex={-1} className="editorial-letter" aria-label="Thư mời từ Mekong Meris">
     <img className="editorial-logo" src={config.brand.logoUrl} alt={`Logo ${config.brand.storeName}`} />
     <span className="editorial-eyebrow">THƯ MỜI TRÂN TRỌNG</span>
-    <h1>Khai trương<br /><em>Mekong Meris</em></h1>
+    <h1><span className="invitation-title-line"><span>Khai trương</span></span><span className="invitation-title-line"><em>Mekong Meris</em></span></h1>
     <div className="editorial-rule" />
     <p>Ban lãnh đạo Mekong Meris trân trọng kính mời</p>
     <strong className="letter-guest">{guest || 'QUÝ ĐỐI TÁC, KHÁCH HÀNG VÀ BẠN BÈ'}</strong>

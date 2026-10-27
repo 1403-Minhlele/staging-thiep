@@ -18,7 +18,7 @@ export const EditorialCover: React.FC<{
         <div className="editorial-kicker"><span><i /> MEKONG MERIS</span><span>GRAND OPENING</span></div>
         <img className="cover-logo" src={config.brand.logoUrl} alt={`Logo ${config.brand.storeName}`} />
         <span className="editorial-eyebrow">YOU ARE CORDIALLY INVITED</span>
-        <h1>Grand<br /><em>Opening</em></h1>
+        <h1><span className="invitation-title-line"><span>Grand</span></span><span className="invitation-title-line"><em>Opening</em></span></h1>
         <span className="cover-invitation">THƯ MỜI KHAI TRƯƠNG</span>
         <div className="cover-date"><span>THỨ BẢY</span><strong>07.11.2026</strong></div>
       </div>
@@ -26,6 +26,7 @@ export const EditorialCover: React.FC<{
       <div className="cover-bottom">
         <p>Trân trọng kính mời Quý đối tác, khách hàng và bạn bè cùng chung vui trong ngày khai trương.</p>
         <button
+          id="open-invitation"
           type="button"
           onClick={onOpen}
           aria-expanded={isOpen}
@@ -36,7 +37,7 @@ export const EditorialCover: React.FC<{
           MỞ THƯ MỜI <span aria-hidden="true">↗</span>
         </button>
         <small>{config.brand.tagline}</small>
-        <div className="editorial-number">01 / 08</div>
+
       </div>
       <div className="brand-stripe" aria-hidden="true" />
     </section>

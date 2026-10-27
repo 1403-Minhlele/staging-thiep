@@ -52,7 +52,7 @@ describe('Interactive Envelope Opening Flow & Audio Removal', () => {
     expect(screen.queryByLabelText(/Xác nhận tham dự sự kiện khai trương/i)).toBeNull();
   });
 
-  it('opens invitation when guest clicks "Chạm Để Mở Thiệp", rendering main content, sections and footer', async () => {
+  it('opens invitation when guest clicks "Chạm Để Mở Thiệp", without footer or page counters', async () => {
     render(<App />);
 
     const openButton = screen.getByRole('button', { name: /Chạm Để Mở Thiệp/i });
@@ -70,7 +70,8 @@ describe('Interactive Envelope Opening Flow & Audio Removal', () => {
     expect(screen.getByLabelText(/Thư mời từ Mekong Meris/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Thông tin thời gian và địa điểm/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Xác nhận tham dự sự kiện khai trương/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Thông tin chân trang Mekong Meris/i)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/Thông tin chân trang Mekong Meris/i)).toBeNull();
+    expect(document.querySelector('.editorial-number')).toBeNull();
 
     // The editorial cover gives way to the invitation after opening.
     expect(screen.queryByRole('button', { name: /Chạm Để Mở Thiệp/i })).toBeNull();
@@ -97,6 +98,17 @@ describe('Interactive Envelope Opening Flow & Audio Removal', () => {
       const rsvpSection = document.getElementById('rsvp');
       expect(rsvpSection).toBeInTheDocument();
     });
+  });
+
+  it('can close the invitation and return focus to the cover to replay opening', async () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /Chạm Để Mở Thiệp/i }));
+    await waitFor(() => expect(document.querySelector('main')).toBeInTheDocument());
+    fireEvent.click(screen.getByRole('button', { name: /Xem lại bìa thiệp/i }));
+    expect(document.querySelector('main')).toBeNull();
+    await waitFor(() => expect(screen.getByRole('button', { name: /Chạm Để Mở Thiệp/i })).toHaveFocus());
+    fireEvent.click(screen.getByRole('button', { name: /Chạm Để Mở Thiệp/i }));
+    await waitFor(() => expect(document.querySelector('main')).toBeInTheDocument());
   });
 
   it('safely renders ScrollReveal content visibly when IntersectionObserver is not available', () => {
