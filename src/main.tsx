@@ -5,6 +5,7 @@ import './index.css';
 import './editorial.css';
 import './cover-editorial.css';
 import './invitation-motion.css';
+import './phone-pages.css';
 
 const rootElement = document.getElementById('root');
 

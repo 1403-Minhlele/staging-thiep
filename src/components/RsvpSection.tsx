@@ -5,6 +5,7 @@ import { AttendanceStatus, validateRsvpInput } from '../utils/validation';
 
 interface RsvpSectionProps {
   config: InvitationConfig;
+  compact?: boolean;
 }
 
 interface SubmitResponse {
@@ -18,7 +19,7 @@ interface SubmitResponse {
   rsvpId?: string;
 }
 
-export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
+export const RsvpSection: React.FC<RsvpSectionProps> = ({ config, compact = false }) => {
   const { rsvp, event } = config;
 
   // Form State
@@ -111,6 +112,38 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
   const handleResetForEdit = () => {
     setSubmitResult(null);
   };
+
+  if (compact) return <section id="rsvp" tabIndex={-1} aria-label="Xác nhận tham dự sự kiện khai trương" className="compact-rsvp">
+    <h3>Xác nhận tham dự</h3>
+    {submitResult?.success ? <div className="compact-result" role="status">
+      <p>Cảm ơn <strong>{guestName}</strong> đã gửi phản hồi.</p>
+      {submitResult.isMock && <p role="note">{submitResult.notice || 'Chế độ xem trước: dữ liệu chưa lưu vào cơ sở dữ liệu thật.'}</p>}
+      <button type="button" onClick={handleResetForEdit}>Thay đổi câu trả lời</button>
+    </div> : <form onSubmit={handleSubmit} noValidate>
+      <div hidden aria-hidden="true"><label htmlFor="website-hp">Website</label><input id="website-hp" value={honeypot} onChange={e => setHoneypot(e.target.value)} tabIndex={-1} autoComplete="off" /></div>
+      <div className="basic-fields">
+        <label htmlFor="guestName">Họ và tên <span aria-hidden="true">*</span>
+          <input id="guestName" autoComplete="name" placeholder="Nguyễn Văn A" maxLength={100} required value={guestName} onChange={e => setGuestName(e.target.value)} aria-invalid={!!clientErrors.guestName} aria-describedby={clientErrors.guestName ? 'guest-error' : undefined} />
+        </label>
+        <label htmlFor="phone">Số điện thoại {rsvp.requirePhone ? '*' : <small>(tùy chọn)</small>}
+          <input id="phone" type="tel" autoComplete="tel" placeholder="09xx xxx xxx" required={rsvp.requirePhone} value={phone} onChange={e => setPhone(e.target.value)} aria-invalid={!!clientErrors.phone} aria-describedby={clientErrors.phone ? 'phone-error' : undefined} />
+        </label>
+      </div>
+      {clientErrors.guestName && <p className="field-error" id="guest-error" role="alert">{clientErrors.guestName}</p>}
+      {clientErrors.phone && <p className="field-error" id="phone-error" role="alert">{clientErrors.phone}</p>}
+      <fieldset className="attendance-options"><legend>Quý khách sẽ tham dự?</legend><div>
+        {[{ id: 'yes', label: 'Tham dự' }, ...(rsvp.allowMaybe ? [{ id: 'maybe', label: 'Chưa chắc' }] : []), { id: 'no', label: 'Không tham dự' }].map(option => <button key={option.id} type="button" aria-pressed={attendance === option.id} onClick={() => setAttendance(option.id as AttendanceStatus)}>{option.label}</button>)}
+      </div></fieldset>
+      <label className="compact-message" htmlFor="message">Lời chúc / Lời nhắn
+        <textarea id="message" rows={1} maxLength={500} placeholder="Gửi lời chúc hoặc lưu ý đón tiếp…" value={message} onChange={e => setMessage(e.target.value)} aria-invalid={!!clientErrors.message} aria-describedby={clientErrors.message ? 'message-error' : undefined} />
+      </label>
+      {clientErrors.message && <p className="field-error" id="message-error" role="alert">{clientErrors.message}</p>}
+      {clientErrors.attendance && <p className="field-error" role="alert">{clientErrors.attendance}</p>}
+      {submitResult?.error && <p className="field-error" role="alert">{submitResult.error}</p>}
+      <button type="submit" className="compact-submit" disabled={isSubmitting}>{isSubmitting ? 'Đang gửi…' : 'Gửi xác nhận tham dự'}</button>
+      <details className="compact-privacy"><summary>Cách sử dụng thông tin của Quý khách</summary><p>{rsvp.privacyNotice}</p></details>
+    </form>}
+  </section>;
 
   return (
     <section

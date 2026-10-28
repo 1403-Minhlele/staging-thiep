@@ -2,6 +2,8 @@ import React from 'react';
 import { invitationData } from '../config/invitationContent';
 import { ScrollReveal } from './ScrollReveal';
 import { ProgramTimeline } from './ProgramTimeline';
+import { RsvpSection } from './RsvpSection';
+import { CalendarShareSection } from './CalendarShareSection';
 
 const Header: React.FC = () => (
   <div className="editorial-kicker"><span><i /> MEKONG MERIS</span><span>GRAND OPENING</span></div>
@@ -50,6 +52,39 @@ export const SpaceSection: React.FC = () => (
     <div className="space-grid">{spaceImages.map((name, index) => <figure key={name} className={index === 0 ? 'space-feature' : ''}>
       <img src={`/images/pdf/${name}.webp`} alt={`Phối cảnh thiết kế dự kiến cửa hàng Mekong Meris, góc ${index + 1}`} loading="lazy" />
     </figure>)}</div>
+  </Frame></ScrollReveal>
+);
+
+export const ProductSpaceSection: React.FC = () => (
+  <ScrollReveal><Frame className="discovery-panel products-panel">
+    <div className="editorial-heading"><h2>Sản phẩm chọn lọc,<br /><em>không gian gặp gỡ.</em></h2></div>
+    <div className="product-stack">
+      <figure><img src="/images/products/ca-ro-phi-packshot.webp" alt="Hộp cá rô phi sashimi Mekong Meris" loading="lazy" /><figcaption><strong>Cá rô phi sashimi</strong></figcaption></figure>
+      <figure><img src="/images/products/banh-tom-packshot.webp" alt="Hộp bánh tôm tẩm bột Mekong Meris" loading="lazy" /><figcaption><strong>Bánh tôm tẩm bột</strong></figcaption></figure>
+    </div>
+    <div className="discovery-space"><h3>Một không gian để gặp gỡ</h3>
+      <div className="space-grid">
+        <figure><img src="/images/pdf/space-main.webp" alt="Phối cảnh thiết kế dự kiến: toàn cảnh cửa hàng Mekong Meris" loading="lazy" /></figure>
+        <figure><img src="/images/pdf/space-2.webp" alt="Phối cảnh thiết kế dự kiến: khu bàn ngồi và tủ sản phẩm" loading="lazy" /></figure>
+      </div>
+      <p>Phối cảnh thiết kế dự kiến</p>
+    </div>
+  </Frame></ScrollReveal>
+);
+
+export const VisitSection: React.FC<{ onReplay: () => void }> = ({ onReplay }) => (
+  <ScrollReveal><Frame className="visit-panel">
+    <div className="editorial-heading"><h2>Hẹn gặp tại<br /><em>Mekong Meris.</em></h2></div>
+    <div className="visit-location">
+      <figure className="facade-image"><img src="/images/pdf/storefront.webp" alt="Phối cảnh mặt tiền dự kiến cửa hàng Mekong Meris" loading="lazy" /></figure>
+      <div><strong>176 Hồng Bàng</strong><p>Phường Chợ Lớn, TP. Hồ Chí Minh</p><time dateTime={`${invitationData.event.dateIso}T${invitationData.event.startTime}:00+07:00`}>{invitationData.event.startTime} · Thứ Bảy, 07/11/2026</time></div>
+    </div>
+    <RsvpSection config={invitationData} compact />
+    <CalendarShareSection config={invitationData} compact />
+    <div className="visit-closing">
+    <div className="visit-contact">Hỗ trợ: <a href="tel:+84778828668">+84 77 882 8668</a></div>
+    <button type="button" className="invitation-replay" onClick={onReplay}>Xem lại bìa thiệp</button>
+    </div>
   </Frame></ScrollReveal>
 );
 

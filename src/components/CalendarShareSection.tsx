@@ -5,9 +5,10 @@ import { generateIcsCalendar, downloadIcsFile } from '../utils/dateTime';
 
 interface CalendarShareSectionProps {
   config: InvitationConfig;
+  compact?: boolean;
 }
 
-export const CalendarShareSection: React.FC<CalendarShareSectionProps> = ({ config }) => {
+export const CalendarShareSection: React.FC<CalendarShareSectionProps> = ({ config, compact = false }) => {
   const { event } = config;
 
   const handleDownloadIcs = () => {
@@ -27,6 +28,19 @@ export const CalendarShareSection: React.FC<CalendarShareSectionProps> = ({ conf
 
     downloadIcsFile(`khai-truong-mekongmeris.ics`, ics);
   };
+
+  if (compact) return <section id="calendar-share" tabIndex={-1} aria-label="Lưu lịch và chia sẻ thiệp mời" className="compact-tools">
+    <div className="visit-actions">
+      <a href={event.googleMapsUrl} target="_blank" rel="noopener noreferrer"><ExternalLink size={15} />Chỉ đường</a>
+      <button type="button" onClick={handleDownloadIcs} aria-label="Thêm Sự Kiện Vào Lịch (.ics)"><Calendar size={15} />Lưu lịch</button>
+    </div>
+    <div className="compact-share" aria-label="Chia sẻ thiệp">
+      <button type="button" aria-label="Gửi qua Zalo"><MessageCircle size={15} /><span>Zalo</span></button>
+      <button type="button" aria-label="Facebook"><ExternalLink size={15} /><span>Facebook</span></button>
+      <button type="button" aria-label="Sao chép link"><Copy size={15} /><span>Sao chép link</span></button>
+      <button type="button" aria-label="Xem mã QR"><QrCode size={15} /><span>Mã QR</span></button>
+    </div>
+  </section>;
 
   return (
     <section
