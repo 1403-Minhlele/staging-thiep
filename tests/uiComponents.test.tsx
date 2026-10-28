@@ -65,15 +65,20 @@ describe('UI Components & User Journey Flow', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders PreviewBanner with official brand staging notice', () => {
-    render(<PreviewBanner config={invitationData} />);
-
+  it('renders PreviewBanner with official brand staging notice when in preview mode and hides in production', () => {
+    // Khi bật isPreviewMode: hiển thị thông báo staging
+    const { unmount } = render(<PreviewBanner config={{ ...invitationData, isPreviewMode: true }} />);
     expect(
       screen.getByText(/BẢN XEM TRƯỚC NỘI BỘ \(STAGING\)/i)
     ).toBeInTheDocument();
     expect(
       screen.getByText(/Mekong Meris Brand/i)
     ).toBeInTheDocument();
+    unmount();
+
+    // Khi ở chế độ chính thức (production): banner hoàn toàn ẩn (null)
+    const { container } = render(<PreviewBanner config={invitationData} />);
+    expect(container.firstChild).toBeNull();
   });
 
   it('renders RsvpSection form fields and handles inputs', () => {
