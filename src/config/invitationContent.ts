@@ -138,7 +138,7 @@ export const invitationData: InvitationConfig = {
     logoUrl: '/images/logo-mekongmeris-primary.svg',
     logoWhiteUrl: '/images/logo-mekongmeris-white.svg',
     logoVerticalUrl: '/images/logo-mekongmeris-vertical.svg',
-    hostName: 'Ban lãnh đạo Mekong Meris',
+    hostName: 'Mekong Meris',
     pronoun: 'Mekong Meris',
     desiredStyle: 'Sang trọng theo bộ nhận diện chính thức Mekong Meris',
     websiteUrl: 'https://mekongmeris.com/',

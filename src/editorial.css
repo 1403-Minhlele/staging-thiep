@@ -119,19 +119,19 @@
 }
 
 .editorial-letter {
-  padding-top: 70px;
+  padding-top: clamp(32px, 5vh, 56px);
 }
 
 .editorial-logo {
-  width: 190px;
+  width: clamp(160px, 42vw, 190px);
   height: auto;
   display: block;
-  margin: 0 auto 32px;
+  margin: 0 auto 24px;
 }
 
 .editorial-letter h1 {
-  font-size: clamp(32px, 9.5vw, 62px);
-  margin: 20px 0;
+  font-size: clamp(30px, 8.8vw, 58px);
+  margin: 16px 0 20px;
   word-break: break-word;
   overflow-wrap: break-word;
 }
@@ -140,15 +140,16 @@
   width: 38px;
   height: 1px;
   background: var(--copper);
-  margin: 28px auto;
+  margin: 22px auto;
 }
 
 .editorial-letter p {
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.85;
   color: #506077;
   margin: 14px auto;
   max-width: 420px;
+  text-wrap: balance;
 }
 
 .letter-guest {
@@ -335,6 +336,100 @@
   margin: 32px 0 24px;
 }
 
+/* Khối tổ chức 3 sản phẩm (1 Card Hero ngang + 2 Card lưới đối xứng) */
+.product-showcase-trio {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Card Hero ngang cho sản phẩm tiêu biểu mới */
+.product-card-hero {
+  display: grid;
+  grid-template-columns: 114px 1fr;
+  align-items: center;
+  background: linear-gradient(135deg, #ffffff 0%, #fbfbf9 100%);
+  border: 1px solid rgba(183, 107, 64, 0.22);
+  box-shadow: 0 10px 28px rgba(0, 39, 130, 0.05);
+}
+
+.product-hero-media {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border-right: 1px solid rgba(0, 39, 130, 0.04);
+}
+
+.product-hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.product-hero-caption {
+  padding: 12px 14px 12px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: left;
+}
+
+.product-pill-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--copper);
+  background: rgba(183, 107, 64, 0.08);
+  border: 1px solid rgba(183, 107, 64, 0.22);
+  border-radius: 999px;
+  padding: 2px 7px;
+  margin-bottom: 2px;
+}
+
+.product-card-hero strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.hero-title-br {
+  display: block;
+}
+
+@media (min-width: 640px) {
+  .hero-title-br {
+    display: none;
+  }
+}
+
+.product-hero-desc {
+  margin: 0;
+  font-size: 11.5px;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.product-hero-specs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #8c9ba5;
+  margin-top: 2px;
+}
+
+.product-hero-specs .spec-dot {
+  color: #cbd5e1;
+}
+
 /* Lưới 2 thẻ sản phẩm (aspect-ratio 4:3) */
 .product-dual-grid {
   display: grid;
@@ -368,12 +463,11 @@
 .product-img-wrap {
   aspect-ratio: 4 / 3;
   width: 100%;
-  background: #fafaf8;
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
-  border-bottom: 1px solid rgba(0, 39, 130, 0.05);
+  padding: 14px 12px 6px;
 }
 
 .product-img-wrap img {
@@ -383,7 +477,7 @@
 }
 
 .product-card figcaption {
-  padding: 11px 13px;
+  padding: 8px 13px 13px;
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -398,7 +492,8 @@
 
 .product-card span {
   font-size: 11px;
-  color: #64748b;
+  font-weight: 500;
+  color: #526071;
   letter-spacing: 0.01em;
 }
 
@@ -446,12 +541,22 @@
 
 .space-card span {
   font-size: 11px;
-  color: #64748b;
+  font-weight: 500;
+  color: #526071;
   letter-spacing: 0.01em;
 }
 
 /* Tự co về 1 cột trên màn hình điện thoại rất hẹp (< 380px) */
 @media (max-width: 380px) {
+  .product-card-hero {
+    grid-template-columns: 100px 1fr;
+  }
+  .product-hero-caption {
+    padding: 10px 12px;
+  }
+  .product-card-hero strong {
+    font-size: 13.5px;
+  }
   .product-dual-grid,
   .space-diptych-grid {
     grid-template-columns: 1fr;
@@ -604,20 +709,31 @@
   position: relative;
   height: 210px;
   overflow: hidden;
-  border-radius: 15px;
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(0, 39, 130, 0.05);
+  border: 1px solid rgba(0, 39, 130, 0.05);
 }
 
 .program-image img {
   height: 100%;
   width: 100%;
   object-fit: cover;
+  object-position: center 36%;
 }
 
 .program-image:after {
   content: '';
   position: absolute;
-  inset: 35% 0 0;
-  background: linear-gradient(transparent, #001a45bd);
+  inset: auto 0 0 0;
+  height: 45%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 26, 69, 0.15) 30%,
+    rgba(0, 26, 69, 0.5) 65%,
+    rgba(0, 26, 69, 0.82) 100%
+  );
+  pointer-events: none;
 }
 
 .program-image span {
