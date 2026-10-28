@@ -4,8 +4,7 @@ import { PreviewBanner } from './components/PreviewBanner';
 import { EditorialCover } from './components/EditorialCover';
 import { EditorialLetter } from './components/EditorialLetter';
 import { EditorialEventCard } from './components/EditorialEventCard';
-import { InvitationScreen, StorySection, ProductsSection, SpaceSection, ProgramSection, LocationSection, RsvpScreen } from './components/EditorialSections';
-import { RsvpSection } from './components/RsvpSection';
+import { InvitationScreen, StorySection, ProductSpaceSection, ProgramSection, LocationRsvpSection } from './components/EditorialSections';
 import { CalendarShareSection } from './components/CalendarShareSection';
 import { ScrollReveal } from './components/ScrollReveal';
 
@@ -144,11 +143,9 @@ export const App: React.FC = () => {
               <EditorialEventCard config={invitationData} />
             </InvitationScreen>
             <StorySection />
-            <ProductsSection />
-            <SpaceSection />
+            <ProductSpaceSection />
             <ProgramSection />
-            <LocationSection />
-            <RsvpScreen><RsvpSection config={invitationData} /></RsvpScreen>
+            <LocationRsvpSection config={invitationData} />
             <div className="editorial-extras">
               <ScrollReveal><CalendarShareSection config={invitationData} /></ScrollReveal>
               <button type="button" className="invitation-replay" onClick={handleReplayInvitation}>Xem lại bìa thiệp</button>
