@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import { CheckCircle2, AlertCircle, Send, ShieldCheck, RefreshCw, CalendarCheck } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { CheckCircle2, AlertCircle, Send, ShieldCheck, RefreshCw, CalendarCheck, ChevronUp } from 'lucide-react';
 import { InvitationConfig } from '../config/invitationContent';
 import { AttendanceStatus, validateRsvpInput } from '../utils/validation';
 
-interface RsvpSectionProps {
+export interface RsvpSectionProps {
   config: InvitationConfig;
+  collapsible?: boolean;
+  defaultOpen?: boolean;
+  minimal?: boolean;
 }
 
 interface SubmitResponse {
@@ -18,7 +21,12 @@ interface SubmitResponse {
   rsvpId?: string;
 }
 
-export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
+export const RsvpSection: React.FC<RsvpSectionProps> = ({
+  config,
+  collapsible = false,
+  defaultOpen = true,
+  minimal = false,
+}) => {
   const { rsvp, event } = config;
 
   // Form State
@@ -31,11 +39,21 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
   const [honeypot, setHoneypot] = useState(''); // Website spam honeypot
 
   // UI State
+  const [isOpen, setIsOpen] = useState(collapsible ? defaultOpen : true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState<SubmitResponse | null>(null);
   const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
 
+  const cardRef = useRef<HTMLDivElement>(null);
+
   if (!rsvp.enabled) return null;
+
+  const handleOpenForm = () => {
+    setIsOpen(true);
+    setTimeout(() => {
+      cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 50);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,39 +130,88 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
     setSubmitResult(null);
   };
 
+  // Trạng thái nút bấm mở biểu mẫu khi ở chế độ collapsible
+  if (collapsible && !isOpen) {
+    return (
+      <section
+        id="rsvp"
+        ref={cardRef}
+        tabIndex={-1}
+        aria-label="Xác nhận tham dự sự kiện khai trương"
+        className="rsvp-trigger-wrap text-center py-2 outline-none focus:outline-none"
+      >
+        <button
+          type="button"
+          onClick={handleOpenForm}
+          className="rsvp-trigger-btn"
+          aria-expanded={false}
+          aria-label="Nhấn để mở phiếu xác nhận tham dự"
+        >
+          <CalendarCheck className="w-4 h-4 text-[#FF6403]" />
+          <span>Xác Nhận Tham Dự Tại Đây</span>
+        </button>
+      </section>
+    );
+  }
+
   return (
     <section
       id="rsvp"
+      ref={cardRef}
       tabIndex={-1}
       aria-label="Xác nhận tham dự sự kiện khai trương"
-      className="py-6 sm:py-8 px-4 sm:px-6 max-w-2xl mx-auto font-sans outline-none focus:outline-none"
+      className={minimal ? "rsvp-minimal-wrap" : "py-6 sm:py-8 px-4 sm:px-6 max-w-2xl mx-auto font-sans outline-none focus:outline-none"}
     >
       {/* KHỐI HỒI ĐÁP THỐNG NHẤT (THE UNIFIED RSVP REPLY CARD) */}
-      <div className="relative bg-white rounded-2xl sm:rounded-3xl border border-[#002782]/15 shadow-[0_4px_30px_rgba(0,39,130,0.06)] p-6 sm:p-10 overflow-hidden text-[#0F172A]">
-        {/* Đường viền trang trí nội vi thanh lịch */}
-        <div className="pointer-events-none absolute inset-2.5 sm:inset-3.5 rounded-xl sm:rounded-2xl border border-[#002782]/10" />
+      <div className={`relative bg-white rounded-2xl sm:rounded-3xl border border-[#002782]/15 shadow-[0_4px_30px_rgba(0,39,130,0.06)] overflow-hidden text-[#0F172A] ${minimal ? 'p-5 sm:p-7' : 'p-6 sm:p-10'}`}>
+        {/* Đường viền trang trí nội vi thanh lịch (chỉ hiển thị ở chế độ tiêu chuẩn) */}
+        {!minimal && (
+          <div className="pointer-events-none absolute inset-2.5 sm:inset-3.5 rounded-xl sm:rounded-2xl border border-[#002782]/10" />
+        )}
 
-        {/* Tiêu đề phiếu hồi đáp tích hợp */}
-        <div className="text-center mb-6">
-          <span className="text-xs uppercase tracking-wider text-[#64748B] font-semibold block">
-            R.S.V.P • Đón Tiếp Chu Đáo
-          </span>
-          <h2 className="font-sans text-2xl sm:text-3xl font-extrabold mt-1 tracking-tight text-[#002782]">
-            Xác Nhận Tham Dự
-          </h2>
-          {rsvp.deadline && (
-            <p className="text-xs sm:text-sm text-[#64748B] mt-1 font-medium">
-              Hạn phản hồi: {rsvp.deadline}
-            </p>
-          )}
-
-          {/* Đường phân cách ngắn tinh tế với điểm nhấn cam duy nhất */}
-          <div className="flex items-center justify-center gap-2.5 mt-4 mb-2">
-            <span className="h-[1px] w-12 bg-[#002782]/20" />
-            <span className="w-1.5 h-1.5 rounded-full bg-[#FF6403]" />
-            <span className="h-[1px] w-12 bg-[#002782]/20" />
+        {/* Tiêu đề phiếu hồi đáp */}
+        {minimal ? (
+          <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[#002782]/10">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#FF6403]" />
+              <span className="text-xs uppercase tracking-wider text-[#002782] font-bold">
+                PHIẾU XÁC NHẬN THAM DỰ
+              </span>
+            </div>
+            {collapsible && (
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="inline-flex items-center gap-1 text-xs text-[#64748B] hover:text-[#002782] font-medium transition-colors"
+                aria-label="Thu gọn biểu mẫu"
+              >
+                <span>Thu gọn</span>
+                <ChevronUp className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
-        </div>
+        ) : (
+          <div className="text-center mb-6">
+            <span className="text-xs uppercase tracking-wider text-[#64748B] font-semibold block">
+              R.S.V.P • Đón Tiếp Chu Đáo
+            </span>
+            <h2 className="font-sans text-2xl sm:text-3xl font-extrabold mt-1 tracking-tight text-[#002782]">
+              Xác Nhận Tham Dự
+            </h2>
+            {rsvp.deadline && (
+              <p className="text-xs sm:text-sm text-[#64748B] mt-1 font-medium">
+                Hạn phản hồi: {rsvp.deadline}
+              </p>
+            )}
+
+            {/* Đường phân cách ngắn tinh tế với điểm nhấn cam duy nhất */}
+            <div className="flex items-center justify-center gap-2.5 mt-4 mb-2">
+              <span className="h-[1px] w-12 bg-[#002782]/20" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF6403]" />
+              <span className="h-[1px] w-12 bg-[#002782]/20" />
+            </div>
+          </div>
+        )}
 
         {submitResult?.success ? (
           /* Trạng thái thành công */
@@ -191,7 +258,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
           </div>
         ) : (
           /* Biểu mẫu RSVP */
-          <form onSubmit={handleSubmit} noValidate className="space-y-6">
+          <form onSubmit={handleSubmit} noValidate className={minimal ? "space-y-4" : "space-y-6"}>
             {/* Honeypot Spam Protection (ẩn hoàn toàn với người dùng) */}
             <div className="hidden" aria-hidden="true">
               <label htmlFor="website-hp">Website</label>
@@ -236,7 +303,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
                 placeholder="Ví dụ: Nguyễn Văn A"
                 maxLength={100}
                 required
-                className={`w-full px-4 py-3.5 rounded-2xl text-sm transition-all border outline-none font-medium focus:ring-2 ${
+                className={`w-full px-4 ${minimal ? 'py-2.5' : 'py-3.5'} rounded-xl sm:rounded-2xl text-sm transition-all border outline-none font-medium focus:ring-2 ${
                   clientErrors.guestName
                     ? 'border-red-400 bg-red-50/50 focus:ring-red-400'
                     : 'border-[#CBD5E1] bg-[#F8FAFC] focus:border-[#002782] focus:ring-[#3EAFE8]/40'
@@ -252,10 +319,10 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
 
             {/* 2. Trạng thái tham dự */}
             <div>
-              <span className="block text-xs sm:text-sm font-bold text-[#002782] mb-2">
+              <span className="block text-xs sm:text-sm font-bold text-[#002782] mb-1.5">
                 Quý khách có thể tham dự cùng chúng tôi không? <span className="text-[#FF6403]">*</span>
               </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 {[
                   { id: 'yes', label: 'Tham dự', desc: 'Sẽ có mặt chung vui' },
                   ...(rsvp.allowMaybe ? [{ id: 'maybe', label: 'Chưa chắc', desc: 'Cố gắng sắp xếp' }] : []),
@@ -267,19 +334,19 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
                       key={opt.id}
                       type="button"
                       onClick={() => setAttendance(opt.id as AttendanceStatus)}
-                      className={`p-3.5 rounded-2xl text-left border flex flex-col justify-between min-h-[58px] focus:outline-none focus:ring-2 active:scale-[0.97] transition-[transform,background-color,border-color,box-shadow] duration-150 ease-out ${
+                      className={`${minimal ? 'p-2.5' : 'p-3.5'} rounded-xl sm:rounded-2xl text-left border flex ${minimal ? 'flex-row items-center justify-between min-h-[44px]' : 'flex-col justify-between min-h-[58px]'} focus:outline-none focus:ring-2 active:scale-[0.97] transition-[transform,background-color,border-color,box-shadow] duration-150 ease-out ${
                         selected
                           ? 'border-[#002782] bg-[#002782]/5 ring-2 ring-[#002782]/20'
                           : 'border-[#E2E8F0] md:hover:bg-[#F8FAFC]'
                       }`}
                     >
                       <div className="flex items-center justify-between w-full">
-                        <span className="text-sm font-bold text-[#002782]">{opt.label}</span>
+                        <span className="text-xs sm:text-sm font-bold text-[#002782]">{opt.label}</span>
                         {selected && (
-                          <CheckCircle2 className="w-4 h-4 text-[#002782]" />
+                          <CheckCircle2 className="w-4 h-4 text-[#002782] ml-1.5 shrink-0" />
                         )}
                       </div>
-                      <span className="text-[11px] text-[#64748B] mt-1">{opt.desc}</span>
+                      {!minimal && <span className="text-[11px] text-[#64748B] mt-1">{opt.desc}</span>}
                     </button>
                   );
                 })}
@@ -292,7 +359,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
               )}
             </div>
 
-            {/* 4. Số điện thoại (Chỉ bắt buộc nếu config yêu cầu) */}
+            {/* 3. Số điện thoại (Chỉ bắt buộc nếu config yêu cầu) */}
             <div>
               <label
                 htmlFor="phone"
@@ -306,7 +373,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Ví dụ: 0912 345 678"
-                className={`w-full px-4 py-3.5 rounded-2xl text-sm transition-all border outline-none font-medium focus:ring-2 ${
+                className={`w-full px-4 ${minimal ? 'py-2.5' : 'py-3.5'} rounded-xl sm:rounded-2xl text-sm transition-all border outline-none font-medium focus:ring-2 ${
                   clientErrors.phone
                     ? 'border-red-400 bg-red-50/50 focus:ring-red-400'
                     : 'border-[#CBD5E1] bg-[#F8FAFC] focus:border-[#002782] focus:ring-[#3EAFE8]/40'
@@ -320,7 +387,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
               )}
             </div>
 
-            {/* 5. Lời chúc / Lời nhắn */}
+            {/* 4. Lời chúc / Lời nhắn */}
             <div>
               <label
                 htmlFor="message"
@@ -330,24 +397,26 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
               </label>
               <textarea
                 id="message"
-                rows={3}
+                rows={minimal ? 2 : 3}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Gửi lời chúc mừng đến Mekong Meris hoặc lưu ý đón tiếp..."
                 maxLength={500}
-                className="w-full px-4 py-3.5 rounded-2xl text-sm transition-all border border-[#CBD5E1] bg-[#F8FAFC] focus:border-[#002782] focus:ring-2 focus:ring-[#3EAFE8]/40 outline-none resize-none font-medium"
+                className={`w-full px-4 ${minimal ? 'py-2.5' : 'py-3.5'} rounded-xl sm:rounded-2xl text-sm transition-all border border-[#CBD5E1] bg-[#F8FAFC] focus:border-[#002782] focus:ring-2 focus:ring-[#3EAFE8]/40 outline-none resize-none font-medium`}
               />
-              <div className="flex justify-between items-center text-[11px] text-[#64748B] mt-1">
-                <span>Tối đa 500 ký tự</span>
-                <span>{message.length}/500</span>
-              </div>
+              {!minimal && (
+                <div className="flex justify-between items-center text-[11px] text-[#64748B] mt-1">
+                  <span>Tối đa 500 ký tự</span>
+                  <span>{message.length}/500</span>
+                </div>
+              )}
             </div>
 
-            {/* 6. Nút gửi RSVP */}
+            {/* 5. Nút gửi RSVP */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full min-h-[48px] px-8 py-3.5 rounded-full font-bold text-sm sm:text-base transition-[transform,background-color,box-shadow] duration-150 ease-out flex items-center justify-center gap-2.5 shadow-sm md:hover:shadow bg-[#FF6403] md:hover:bg-[#e65800] text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-[#3EAFE8]/50 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`w-full min-h-[46px] px-8 ${minimal ? 'py-3' : 'py-3.5'} rounded-full font-bold text-sm sm:text-base transition-[transform,background-color,box-shadow] duration-150 ease-out flex items-center justify-center gap-2.5 shadow-sm md:hover:shadow bg-[#FF6403] md:hover:bg-[#e65800] text-white focus:outline-none focus-visible:ring-4 focus-visible:ring-[#3EAFE8]/50 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {isSubmitting ? (
                 <>
@@ -363,9 +432,9 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ config }) => {
             </button>
 
             {/* Thông báo quyền riêng tư */}
-            <div className="pt-2 text-center text-xs text-[#64748B] flex items-start justify-center gap-1.5 leading-relaxed">
+            <div className="pt-1.5 text-center text-xs text-[#64748B] flex items-start justify-center gap-1.5 leading-relaxed">
               <ShieldCheck className="w-4 h-4 shrink-0 text-[#05681E] mt-0.5" />
-              <span>{rsvp.privacyNotice}</span>
+              <span>{minimal ? "Thông tin được bảo mật và chỉ dùng để chuẩn bị đón tiếp chu đáo." : rsvp.privacyNotice}</span>
             </div>
           </form>
         )}
