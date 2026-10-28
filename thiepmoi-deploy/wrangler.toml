@@ -1,0 +1,17 @@
+# Cloudflare Pages / Workers Configuration
+name = "thiepmoi-mekongmeris"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist"
+
+[vars]
+EVENT_ID = "grand-opening-2026"
+CANONICAL_ORIGIN = "https://thiepmoi.mekongmeris.com"
+MONGODB_DB_NAME = "thiepmoi_mekongmeris"
+MONGODB_COLLECTION = "rsvps"
+
+# MONGODB_URI is a sensitive credential!
+# DO NOT put connection strings or credentials in this file.
+# In local development: use .env or .dev.vars
+# In production Cloudflare Pages: configure via Dashboard -> Settings -> Environment Variables,
+# or run: wrangler pages secret put MONGODB_URI

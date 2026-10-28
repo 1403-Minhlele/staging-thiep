@@ -1,159 +1,260 @@
-import React from 'react';
-import { invitationData, InvitationConfig } from '../config/invitationContent';
-import { ScrollReveal } from './ScrollReveal';
-import { ProgramTimeline } from './ProgramTimeline';
-import { RsvpSection } from './RsvpSection';
+import React from "react";
+import { invitationData, InvitationConfig } from "../config/invitationContent";
+import { ScrollReveal } from "./ScrollReveal";
+import { ProgramTimeline } from "./ProgramTimeline";
+import { RsvpSection } from "./RsvpSection";
 
 const Header: React.FC = () => (
-  <div className="editorial-kicker"><span><i /> MEKONG MERIS</span><span>GRAND OPENING</span></div>
+  <div className="editorial-kicker">
+    <span>
+      <i /> MEKONG MERIS
+    </span>
+    <span>GRAND OPENING</span>
+  </div>
 );
 
-const Frame: React.FC<{ className?: string; children: React.ReactNode }> = ({ className = '', children }) => (
+const Frame: React.FC<{ className?: string; children: React.ReactNode }> = ({
+  className = "",
+  children,
+}) => (
   <section className={`editorial-panel ${className}`}>
-    <div className="editorial-inner"><Header />{children}</div>
+    <div className="editorial-inner">
+      <Header />
+      {children}
+    </div>
     <div className="brand-stripe" aria-hidden="true" />
   </section>
 );
 
-const Title: React.FC<{ eyebrow: string; first: string; second: string }> = ({ eyebrow, first, second }) => (
-  <div className="editorial-heading"><span className="editorial-eyebrow">{eyebrow}</span><h2>{first}<br /><em>{second}</em></h2></div>
+const Title: React.FC<{ eyebrow?: string; first: string; second?: string }> = ({
+  eyebrow,
+  first,
+  second,
+}) => (
+  <div className="editorial-heading">
+    {eyebrow && <span className="editorial-eyebrow">{eyebrow}</span>}
+    <h2>
+      {first}
+      {second && (
+        <>
+          <br />
+          <em>{second}</em>
+        </>
+      )}
+    </h2>
+  </div>
 );
 
 export const StorySection: React.FC = () => (
-  <ScrollReveal><Frame className="story-panel">
-    <Title eyebrow="WHY WE BEGAN" first="Một khởi đầu" second="từ sự trăn trở." />
-    <div className="story-copy">
-      <p>Mekong Meris được hình thành từ sự đồng hành của sáu người cộng sự và đối tác lâu năm, cùng chung một trăn trở về thực phẩm cho gia đình Việt.</p>
-      <p>Nhưng tại sao người Việt luôn chưa an tâm về thực phẩm gia đình dùng mỗi ngày, và chưa có cơ hội tiếp cận các sản phẩm tiêu chuẩn quốc tế?</p>
-      <p>Chúng tôi mong muốn đưa những sản phẩm chất lượng, có nguồn gốc rõ ràng và tiện lợi đến gần hơn với mỗi gia đình.</p>
-    </div>
-    <blockquote>“Người Việt xứng đáng được sử dụng những sản phẩm chất lượng được tạo ra từ chính quê hương mình.”</blockquote>
-    <span className="story-signoff">MEKONG MERIS · CHẤT LƯỢNG TỪ SỰ TẬN TÂM</span>
-  </Frame></ScrollReveal>
+  <ScrollReveal>
+    <Frame className="story-panel">
+      <Title
+        eyebrow="Câu chuyện Mekong Meris"
+        first="Một khởi đầu"
+        second="từ sự trăn trở."
+      />
+      <div className="story-copy">
+        <p>
+          Mekong Meris được hình thành từ sự đồng hành của sáu người cộng sự
+          cùng chia sẻ một trăn trở:
+        </p>
+        <p>
+          Những sản phẩm của Việt Nam chất lượng đã được xuất khẩu đi gặp mọi
+          nơi trên thế giới, mà người Việt thì chưa được thưởng thức, trong khi
+          đó mỗi người chúng ta đều có những đắn đo, phân vân hàng ngày về thực
+          phẩm mà mình mua cho gia đình sử dụng.
+        </p>
+        <p>
+          Tại sao chúng ta lại chưa được tiếp cận những thực phẩm an toàn, có
+          nguồn gốc rõ ràng, tiện lợi và phù hợp với khẩu vị của gia đình Việt.
+          Từ suy nghĩ đó, chúng tôi cùng khởi đầu Mekong Meris.
+        </p>
+      </div>
+      <blockquote>
+        “Người Việt xứng đáng được sử dụng những sản phẩm chất lượng được tạo ra
+        từ chính quê hương mình.”
+      </blockquote>
+      <span className="story-signoff">
+        MEKONG MERIS · CHẤT LƯỢNG TỪ SỰ TẬN TÂM
+      </span>
+    </Frame>
+  </ScrollReveal>
 );
 
 export const ProductSpaceSection: React.FC = () => (
-  <ScrollReveal><Frame className="product-space-panel">
-    <Title eyebrow="PRODUCT & SPACE" first="Hương vị tinh tuyển &" second="không gian gặp gỡ." />
-    <p className="editorial-intro">Khám phá những sản phẩm tiêu biểu cùng không gian trải nghiệm ấm cúng được chuẩn bị chu đáo cho ngày khai trương.</p>
-    
-    <div className="showcase-subgroup">
-      <div className="showcase-header">
-        <span className="showcase-tag">01 · SẢN PHẨM TIÊU BIỂU</span>
-        <span className="showcase-rule" aria-hidden="true" />
-      </div>
-      <div className="product-dual-grid">
-        <figure className="showcase-card product-card">
-          <div className="product-img-wrap">
-            <img
-              src="/images/products/ca-ro-phi-packshot.webp"
-              alt="Hộp cá rô phi sashimi Mekong Meris"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <figcaption>
-            <strong>Cá rô phi sashimi</strong>
-            <span>Sản phẩm tiêu biểu · Chuẩn Sashimi</span>
-          </figcaption>
-        </figure>
+  <ScrollReveal>
+    <Frame className="product-space-panel">
+      <Title
+        eyebrow="PRODUCT & SPACE"
+        first="Hương vị tinh tuyển &"
+        second="Trải nghiệm không gian."
+      />
 
-        <figure className="showcase-card product-card">
-          <div className="product-img-wrap">
-            <img
-              src="/images/products/cha-tom-vien-packshot.webp"
-              alt="Hộp chả tôm viên đông lạnh Mekong Meris và đĩa chả tôm chín"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <figcaption>
-            <strong>Chả tôm viên đông lạnh</strong>
-            <span>Sản phẩm tiêu biểu · Chuẩn BAP & Tươi ngon</span>
-          </figcaption>
-        </figure>
-      </div>
-    </div>
+      <div className="showcase-subgroup">
+        <div className="showcase-header">
+          <span className="showcase-tag">01 · SẢN PHẨM TIÊU BIỂU</span>
+          <span className="showcase-rule" aria-hidden="true" />
+        </div>
+        <div className="product-showcase-trio">
+          <figure className="showcase-card product-card product-card-hero">
+            <div className="product-hero-media">
+              <img
+                src="/images/products/tom-xe-buom-packshot.webp"
+                alt="Hộp tôm xẻ bướm tẩm bột dừa Mekong Meris 200g chuẩn BAP"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <figcaption className="product-hero-caption">
+              <span className="product-pill-badge">
+                MÓN TIÊU BIỂU · BAP 4 SAO
+              </span>
+              <strong>Tôm xẻ bướm tẩm bột dừa</strong>
+              <div className="product-hero-specs">
+                <span>Hộp 200g</span>
+                <span className="spec-dot" aria-hidden="true">
+                  ·
+                </span>
+                <span>Đông lạnh -18°C</span>
+              </div>
+            </figcaption>
+          </figure>
 
-    <div className="showcase-divider" aria-hidden="true" />
+          <div className="product-dual-grid">
+            <figure className="showcase-card product-card">
+              <div className="product-img-wrap">
+                <img
+                  src="/images/products/ca-ro-phi-packshot.webp"
+                  alt="Hộp cá rô phi sashimi Mekong Meris"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption>
+                <strong>Cá rô phi sashimi</strong>
+                <span>Phi lê tươi · Chuẩn Sashimi xuất khẩu</span>
+              </figcaption>
+            </figure>
 
-    <div className="showcase-subgroup">
-      <div className="showcase-header">
-        <span className="showcase-tag">02 · KHÔNG GIAN DỰ TIỆC</span>
-        <span className="showcase-rule" aria-hidden="true" />
-      </div>
-      <div className="space-diptych-grid">
-        <figure className="showcase-card space-card">
-          <div className="space-img-wrap">
-            <img
-              src="/images/pdf/space-main.webp"
-              alt="Phối cảnh sảnh đón tiếp và quầy trưng bày chính Mekong Meris"
-              loading="lazy"
-              decoding="async"
-            />
+            <figure className="showcase-card product-card">
+              <div className="product-img-wrap">
+                <img
+                  src="/images/products/cha-tom-vien-packshot.webp"
+                  alt="Hộp chả tôm viên đông lạnh Mekong Meris và đĩa chả tôm chín"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption>
+                <strong>Chả tôm viên đông lạnh</strong>
+                <span>Chuẩn BAP 4 sao · Ngọt thịt tự nhiên</span>
+              </figcaption>
+            </figure>
           </div>
-          <figcaption>
-            <strong>Sảnh đón tiếp & Quầy trung tâm</strong>
-            <span>Không gian mở hiện đại, tràn ngập ánh sáng</span>
-          </figcaption>
-        </figure>
+        </div>
+      </div>
 
-        <figure className="showcase-card space-card">
-          <div className="space-img-wrap">
-            <img
-              src="/images/pdf/space-dining.webp"
-              alt="Phối cảnh khu vực bàn tiệc và trải nghiệm ẩm thực Mekong Meris"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <figcaption>
-            <strong>Khu ẩm thực & Trải nghiệm vị giác</strong>
-            <span>Không gian thưởng thức hiện đại, tươi sáng và ấm cúng</span>
-          </figcaption>
-        </figure>
+      <div className="showcase-divider" aria-hidden="true" />
+
+      <div className="showcase-subgroup">
+        <div className="showcase-header">
+          <span className="showcase-tag">02 · KHÔNG GIAN DỰ TIỆC</span>
+          <span className="showcase-rule" aria-hidden="true" />
+        </div>
+        <div className="space-diptych-grid">
+          <figure className="showcase-card space-card">
+            <div className="space-img-wrap">
+              <img
+                src="/images/pdf/space-2.webp"
+                alt="Phối cảnh sảnh đón tiếp và quầy trưng bày chính Mekong Meris"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <figcaption>
+              <strong>Sảnh đón tiếp & Quầy trung tâm</strong>
+              <span>Đón tiếp & Trưng bày trải nghiệm</span>
+            </figcaption>
+          </figure>
+
+          <figure className="showcase-card space-card">
+            <div className="space-img-wrap">
+              <img
+                src="/images/pdf/space-dining.webp"
+                alt="Phối cảnh khu vực bàn tiệc và trải nghiệm ẩm thực Mekong Meris"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <figcaption>
+              <strong>Khu ẩm thực & Trải nghiệm vị giác</strong>
+              <span>Thưởng thức món ngon tại bàn tiệc</span>
+            </figcaption>
+          </figure>
+        </div>
       </div>
-    </div>
-  </Frame></ScrollReveal>
+    </Frame>
+  </ScrollReveal>
 );
 
 export const ProductsSection: React.FC = ProductSpaceSection;
 export const SpaceSection: React.FC = () => null;
 
 const agenda = [
-  ['Đón khách', 'Chào mừng và gặp gỡ'],
-  ['Nghi thức khai trương', 'Khoảnh khắc đánh dấu khởi đầu'],
-  ['Tham quan cửa hàng', 'Khám phá không gian và sản phẩm'],
-  ['Dùng thử sản phẩm', 'Thưởng thức những hương vị chọn lọc'],
+  ["Đón khách", "Chào mừng và gặp gỡ"],
+  ["Nghi thức khai trương", "Khoảnh khắc đánh dấu khởi đầu"],
+  ["Tham quan cửa hàng", "Khám phá không gian và sản phẩm"],
+  ["Dùng thử sản phẩm", "Thưởng thức những hương vị chọn lọc"],
 ];
 export const ProgramSection: React.FC = () => (
-  <ScrollReveal><Frame className="program-panel">
-    <Title eyebrow="THE GRAND OPENING EXPERIENCE" first="Hẹn gặp tại" second="ngày khai trương." />
-    <div className="program-start"><span>BẮT ĐẦU</span><strong>{invitationData.event.startTime} · 07/11/2026</strong></div>
-    <ProgramTimeline items={agenda} />
-    <div className="program-image"><img src="/images/products/tom-tam-bot-dua.jpg" alt="Món tôm tẩm bột dừa Mekong Meris" loading="lazy" /><span>Trân trọng đón tiếp Quý khách.</span></div>
-  </Frame></ScrollReveal>
+  <ScrollReveal>
+    <Frame className="program-panel">
+      <Title
+        eyebrow="THE GRAND OPENING EXPERIENCE"
+        first="Chương trình sự kiện"
+      />
+      <div className="program-start">
+        <span>BẮT ĐẦU</span>
+        <strong>{invitationData.event.startTime} · 07/11/2026</strong>
+      </div>
+      <ProgramTimeline items={agenda} />
+      <div className="program-image">
+        <img
+          src="/images/products/tom-tam-bot-dua.jpg"
+          alt="Món tôm tẩm bột dừa Mekong Meris"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+    </Frame>
+  </ScrollReveal>
 );
 
 export interface LocationRsvpProps {
   config?: InvitationConfig;
 }
 
-export const LocationRsvpSection: React.FC<LocationRsvpProps> = ({ config = invitationData }) => {
+export const LocationRsvpSection: React.FC<LocationRsvpProps> = ({
+  config = invitationData,
+}) => {
   const { event } = config;
   return (
     <ScrollReveal>
       <Frame className="location-rsvp-panel">
-        <Title eyebrow="FIND YOUR WAY & R.S.V.P" first="Hẹn gặp tại" second="Mekong Meris." />
+        <Title first="Hẹn gặp tại" second="Mekong Meris." />
 
         {/* BỐ CỤC LEFT-RIGHT: Div thông tin bên trái (thu nhỏ tinh tế), Ảnh cửa hàng bên phải (rộng rãi thoáng đãng) */}
         <div className="location-dual-layout">
           <div className="location-card location-info-card">
             <div className="location-info-body">
-              <span className="editorial-eyebrow">ĐỊA ĐIỂM KHAI TRƯƠNG</span>
+              <span className="editorial-eyebrow">ĐỊA CHỈ</span>
               <strong className="location-name">176 Hồng Bàng</strong>
-              <p className="location-address">Phường Chợ Lớn, TP. Hồ Chí Minh</p>
-              <span className="location-time">Thứ Bảy · 07/11 · {event.startTime}</span>
+              <p className="location-address">
+                Phường Chợ Lớn, TP. Hồ Chí Minh
+              </p>
+              <span className="location-time">
+                Thứ Bảy · 07/11 · {event.startTime}
+              </span>
             </div>
 
             {/* Nút chỉ đường thu nhỏ thanh lịch + hotline */}
@@ -166,10 +267,12 @@ export const LocationRsvpSection: React.FC<LocationRsvpProps> = ({ config = invi
                 aria-label="Xem chỉ đường Google Maps"
               >
                 <span>Chỉ đường Maps</span>
-                <span aria-hidden="true" className="location-cta-arrow">↗</span>
+                <span aria-hidden="true" className="location-cta-arrow">
+                  ↗
+                </span>
               </a>
               <div className="location-hotline">
-                <span>HỖ TRỢ</span>
+                <span>Hotline</span>
                 <a href="tel:+84778828668">+84 77 882 8668</a>
               </div>
             </div>
@@ -177,29 +280,24 @@ export const LocationRsvpSection: React.FC<LocationRsvpProps> = ({ config = invi
 
           <figure className="facade-image storefront-figure">
             <img
-              src="/images/pdf/storefront.webp"
-              alt="Phối cảnh mặt tiền dự kiến cửa hàng Mekong Meris"
-              loading="lazy"
-              decoding="async"
+              src="/images/pdf/store.jpg"
+              alt="Mặt tiền thực tế Mekong Meris 176 Hồng Bàng"
             />
           </figure>
         </div>
-
-        {/* Phân cách trang nhã */}
-        <div className="location-rsvp-divider" aria-hidden="true">
-          <span className="divider-line" />
-          <span className="divider-badge">✦ R.S.V.P ✦</span>
-          <span className="divider-line" />
-        </div>
-
         {/* KHỐI XÁC NHẬN THAM DỰ RÚT GỌN: Nút mở form + Form tối giản */}
         <div className="rsvp-compact-block">
           <div className="rsvp-editorial-heading">
-            <span className="editorial-eyebrow">✦ &nbsp; WE LOOK FORWARD TO SEEING YOU</span>
-            <h2>Sự hiện diện của Quý khách là <em>niềm vinh hạnh.</em></h2>
-            <p>Xin Quý khách vui lòng xác nhận để chúng tôi chuẩn bị đón tiếp chu đáo.</p>
+            <h2>
+              Sự hiện diện của Quý khách là <em>niềm vinh hạnh.</em>
+            </h2>
           </div>
-          <RsvpSection config={config} collapsible={true} defaultOpen={false} minimal={true} />
+          <RsvpSection
+            config={config}
+            collapsible={true}
+            defaultOpen={false}
+            minimal={true}
+          />
           <div className="rsvp-thanks">Trân trọng cảm ơn!</div>
         </div>
       </Frame>
@@ -209,14 +307,37 @@ export const LocationRsvpSection: React.FC<LocationRsvpProps> = ({ config = invi
 
 export const LocationSection: React.FC = () => <LocationRsvpSection />;
 
-export const InvitationScreen: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <ScrollReveal><Frame className="letter-panel">{children}</Frame></ScrollReveal>
+export const InvitationScreen: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => (
+  <ScrollReveal>
+    <Frame className="letter-panel">{children}</Frame>
+  </ScrollReveal>
 );
 
-export const RsvpScreen: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <ScrollReveal><Frame className="rsvp-panel">
-    <div className="rsvp-editorial-heading"><span className="editorial-eyebrow">✦ &nbsp; WE LOOK FORWARD TO SEEING YOU</span><h2>Sự hiện diện của Quý khách là <em>niềm vinh hạnh.</em></h2><p>Xin Quý khách vui lòng xác nhận để chúng tôi chuẩn bị đón tiếp chu đáo.</p></div>
-    {children}
-    <div className="rsvp-thanks">Trân trọng cảm ơn!</div><div className="location-hotline"><span>HỖ TRỢ THÔNG TIN</span><a href="tel:+84778828668">+84 77 882 8668</a></div>
-  </Frame></ScrollReveal>
+export const RsvpScreen: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => (
+  <ScrollReveal>
+    <Frame className="rsvp-panel">
+      <div className="rsvp-editorial-heading">
+        <span className="editorial-eyebrow">
+          ✦ &nbsp; WE LOOK FORWARD TO SEEING YOU
+        </span>
+        <h2>
+          Sự hiện diện của Quý khách là <em>niềm vinh hạnh.</em>
+        </h2>
+        <p>
+          Xin Quý khách vui lòng xác nhận để chúng tôi chuẩn bị đón tiếp chu
+          đáo.
+        </p>
+      </div>
+      {children}
+      <div className="rsvp-thanks">Trân trọng cảm ơn!</div>
+      <div className="location-hotline">
+        <span>HỖ TRỢ THÔNG TIN</span>
+        <a href="tel:+84778828668">+84 77 882 8668</a>
+      </div>
+    </Frame>
+  </ScrollReveal>
 );
