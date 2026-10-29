@@ -30,8 +30,8 @@ export const PROGRAM_SLIDES: SlideItem[] = [
 ];
 
 // Display duration per slide requested by user: 800ms
-const DISPLAY_DURATION = 800;
-const TRANSITION_DURATION = 320;
+const DISPLAY_DURATION = 2000;
+const TRANSITION_DURATION = 500;
 
 export const ProgramCarousel: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
