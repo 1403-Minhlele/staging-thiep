@@ -9,7 +9,8 @@ build/
 
 # Environment and sensitive credentials
 .env
-.env.local
+.env.*
+*.env
 .dev.vars
 *.pem
 *.key
