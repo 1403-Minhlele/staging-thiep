@@ -101,9 +101,10 @@ export const ProductSpaceSection: React.FC = () => (
           <span className="showcase-tag">01 · SẢN PHẨM TIÊU BIỂU</span>
           <span className="showcase-rule" aria-hidden="true" />
         </div>
-        <div className="product-showcase-list">
-          <figure className="showcase-card product-item-card">
-            <div className="product-item-thumb">
+        <div className="product-bento-grid">
+          {/* Cột trái: Hộp tôm xẻ bướm chiếm trọn nửa trái */}
+          <figure className="showcase-card product-hero-card">
+            <div className="product-hero-thumb">
               <img
                 src="/images/products/tom-xe-buom-packshot.webp"
                 alt="Hộp tôm xẻ bướm tẩm bột dừa Mekong Meris"
@@ -111,40 +112,43 @@ export const ProductSpaceSection: React.FC = () => (
                 decoding="async"
               />
             </div>
-            <figcaption className="product-item-info">
+            <figcaption className="product-hero-info">
               <strong>Tôm xẻ bướm tẩm bột dừa</strong>
             </figcaption>
           </figure>
 
-          <figure className="showcase-card product-item-card">
-            <div className="product-item-thumb">
-              <img
-                className="scale-wide"
-                src="/images/products/ca-ro-phi-packshot.webp"
-                alt="Hộp cá rô phi sashimi Mekong Meris"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <figcaption className="product-item-info">
-              <strong>Cá rô phi sashimi</strong>
-            </figcaption>
-          </figure>
+          {/* Cột phải: 2 sản phẩm còn lại xếp chồng */}
+          <div className="product-side-stack">
+            <figure className="showcase-card product-side-card">
+              <div className="product-side-thumb">
+                <img
+                  className="scale-wide"
+                  src="/images/products/ca-ro-phi-packshot.webp"
+                  alt="Hộp cá rô phi sashimi Mekong Meris"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption className="product-side-info">
+                <strong>Cá rô phi sashimi</strong>
+              </figcaption>
+            </figure>
 
-          <figure className="showcase-card product-item-card">
-            <div className="product-item-thumb">
-              <img
-                className="scale-dish"
-                src="/images/products/cha-tom-vien-packshot.webp"
-                alt="Hộp chả tôm viên đông lạnh Mekong Meris"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <figcaption className="product-item-info">
-              <strong>Chả tôm viên đông lạnh</strong>
-            </figcaption>
-          </figure>
+            <figure className="showcase-card product-side-card">
+              <div className="product-side-thumb">
+                <img
+                  className="scale-dish"
+                  src="/images/products/cha-tom-vien-packshot.webp"
+                  alt="Hộp chả tôm viên đông lạnh Mekong Meris"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <figcaption className="product-side-info">
+                <strong>Chả tôm viên đông lạnh</strong>
+              </figcaption>
+            </figure>
+          </div>
         </div>
       </div>
 
