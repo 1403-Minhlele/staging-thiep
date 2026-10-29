@@ -2,6 +2,8 @@ import React from "react";
 import { invitationData, InvitationConfig } from "../config/invitationContent";
 import { ScrollReveal } from "./ScrollReveal";
 import { ProgramTimeline } from "./ProgramTimeline";
+import { ProgramCarousel } from "./ProgramCarousel";
+import { SpaceCarousel } from "./SpaceCarousel";
 import { RsvpSection } from "./RsvpSection";
 
 const Header: React.FC = () => (
@@ -55,19 +57,23 @@ export const StorySection: React.FC = () => (
       />
       <div className="story-copy">
         <p>
-          Mekong Meris được hình thành từ sự đồng hành của sáu người cộng sự
-          cùng chia sẻ một trăn trở:
+          Mekong Meris được hình thành từ sáu người cộng sự cùng chung một trăn
+          trở .
         </p>
         <p>
-          Những sản phẩm của Việt Nam chất lượng đã được xuất khẩu đi gặp mọi
-          nơi trên thế giới, mà người Việt thì chưa được thưởng thức, trong khi
-          đó mỗi người chúng ta đều có những đắn đo, phân vân hàng ngày về thực
-          phẩm mà mình mua cho gia đình sử dụng.
+          Thực phẩm Việt đạt tiêu chuẩn quốc tế đã có mặt ở nhiều nơi trên thế
+          giới ,Làm sao để những sản phẩm ấy đến gần hơn với người Việt, khi mỗi
+          ngày nhiều gia đình vẫn lo lắng lựa chọn thực phẩm an toàn cho mình và
+          người thân?
         </p>
         <p>
-          Tại sao chúng ta lại chưa được tiếp cận những thực phẩm an toàn, có
-          nguồn gốc rõ ràng, tiện lợi và phù hợp với khẩu vị của gia đình Việt.
-          Từ suy nghĩ đó, chúng tôi cùng khởi đầu Mekong Meris.
+          Từ trăn trở ấy, chúng tôi cùng xây dựng Mekong Meris, mang thực phẩm
+          chất lượng xuất khẩu, nguồn gốc rõ ràng, tiện lợi đến bàn ăn Việt.
+        </p>
+        <p>
+          Chúng tôi tin rằng, chăm chút từng bữa ăn cũng là cách chăm lo sức
+          khỏe cộng đồng, trân trọng công sức người làm ra sản phẩm và lan tỏa
+          giá trị Việt.
         </p>
       </div>
       <blockquote>
@@ -149,37 +155,7 @@ export const ProductSpaceSection: React.FC = () => (
           <span className="showcase-tag">02 · KHÔNG GIAN DỰ TIỆC</span>
           <span className="showcase-rule" aria-hidden="true" />
         </div>
-        <div className="space-diptych-grid">
-          <figure className="showcase-card space-card">
-            <div className="space-img-wrap">
-              <img
-                src="/images/pdf/space-2.webp"
-                alt="Phối cảnh sảnh đón tiếp và quầy trưng bày chính Mekong Meris"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <figcaption>
-              <strong>Sảnh đón tiếp & Quầy trung tâm</strong>
-              <span>Đón tiếp & Trưng bày trải nghiệm</span>
-            </figcaption>
-          </figure>
-
-          <figure className="showcase-card space-card">
-            <div className="space-img-wrap">
-              <img
-                src="/images/pdf/space-dining.webp"
-                alt="Phối cảnh khu vực bàn tiệc và trải nghiệm ẩm thực Mekong Meris"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <figcaption>
-              <strong>Khu ẩm thực & Trải nghiệm vị giác</strong>
-              <span>Thưởng thức món ngon tại bàn tiệc</span>
-            </figcaption>
-          </figure>
-        </div>
+        <SpaceCarousel />
       </div>
     </Frame>
   </ScrollReveal>
@@ -206,12 +182,7 @@ export const ProgramSection: React.FC = () => (
         <strong>{invitationData.event.startTime} · 07/11/2026</strong>
       </div>
       <ProgramTimeline items={agenda} />
-      <img
-        src="/images/products/tom-tam-bot-dua.jpg"
-        alt="Món tôm tẩm bột dừa Mekong Meris"
-        loading="eager"
-        decoding="async"
-      />
+      <ProgramCarousel />
     </Frame>
   </ScrollReveal>
 );
