@@ -102,7 +102,16 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
         }),
       });
 
-      const data: SubmitResponse = await res.json();
+      let data: SubmitResponse;
+      try {
+        data = await res.json();
+      } catch {
+        setSubmitResult({
+          success: false,
+          error: `Máy chủ phản hồi trạng thái ${res.status}. Vui lòng kiểm tra lại cấu hình hệ thống hoặc thử lại sau ít phút.`,
+        });
+        return;
+      }
 
       if (!res.ok || !data.success) {
         if (data.errors) {
