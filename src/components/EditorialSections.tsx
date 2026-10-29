@@ -95,62 +95,50 @@ export const ProductSpaceSection: React.FC = () => (
           <span className="showcase-tag">01 · SẢN PHẨM TIÊU BIỂU</span>
           <span className="showcase-rule" aria-hidden="true" />
         </div>
-        <div className="product-showcase-trio">
-          <figure className="showcase-card product-card product-card-hero">
-            <div className="product-hero-media">
+        <div className="product-showcase-list">
+          <figure className="showcase-card product-item-card">
+            <div className="product-item-thumb">
               <img
                 src="/images/products/tom-xe-buom-packshot.webp"
-                alt="Hộp tôm xẻ bướm tẩm bột dừa Mekong Meris 200g chuẩn BAP"
+                alt="Hộp tôm xẻ bướm tẩm bột dừa Mekong Meris"
                 loading="lazy"
                 decoding="async"
               />
             </div>
-            <figcaption className="product-hero-caption">
-              <span className="product-pill-badge">
-                MÓN TIÊU BIỂU · BAP 4 SAO
-              </span>
+            <figcaption className="product-item-info">
               <strong>Tôm xẻ bướm tẩm bột dừa</strong>
-              <div className="product-hero-specs">
-                <span>Hộp 200g</span>
-                <span className="spec-dot" aria-hidden="true">
-                  ·
-                </span>
-                <span>Đông lạnh -18°C</span>
-              </div>
             </figcaption>
           </figure>
 
-          <div className="product-dual-grid">
-            <figure className="showcase-card product-card">
-              <div className="product-img-wrap">
-                <img
-                  src="/images/products/ca-ro-phi-packshot.webp"
-                  alt="Hộp cá rô phi sashimi Mekong Meris"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <figcaption>
-                <strong>Cá rô phi sashimi</strong>
-                <span>Phi lê tươi · Chuẩn Sashimi xuất khẩu</span>
-              </figcaption>
-            </figure>
+          <figure className="showcase-card product-item-card">
+            <div className="product-item-thumb">
+              <img
+                className="scale-wide"
+                src="/images/products/ca-ro-phi-packshot.webp"
+                alt="Hộp cá rô phi sashimi Mekong Meris"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <figcaption className="product-item-info">
+              <strong>Cá rô phi sashimi</strong>
+            </figcaption>
+          </figure>
 
-            <figure className="showcase-card product-card">
-              <div className="product-img-wrap">
-                <img
-                  src="/images/products/cha-tom-vien-packshot.webp"
-                  alt="Hộp chả tôm viên đông lạnh Mekong Meris và đĩa chả tôm chín"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <figcaption>
-                <strong>Chả tôm viên đông lạnh</strong>
-                <span>Chuẩn BAP 4 sao · Ngọt thịt tự nhiên</span>
-              </figcaption>
-            </figure>
-          </div>
+          <figure className="showcase-card product-item-card">
+            <div className="product-item-thumb">
+              <img
+                className="scale-dish"
+                src="/images/products/cha-tom-vien-packshot.webp"
+                alt="Hộp chả tôm viên đông lạnh Mekong Meris"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <figcaption className="product-item-info">
+              <strong>Chả tôm viên đông lạnh</strong>
+            </figcaption>
+          </figure>
         </div>
       </div>
 
@@ -218,14 +206,12 @@ export const ProgramSection: React.FC = () => (
         <strong>{invitationData.event.startTime} · 07/11/2026</strong>
       </div>
       <ProgramTimeline items={agenda} />
-      <div className="program-image">
-        <img
-          src="/images/products/tom-tam-bot-dua.jpg"
-          alt="Món tôm tẩm bột dừa Mekong Meris"
-          loading="eager"
-          decoding="async"
-        />
-      </div>
+      <img
+        src="/images/products/tom-tam-bot-dua.jpg"
+        alt="Món tôm tẩm bột dừa Mekong Meris"
+        loading="eager"
+        decoding="async"
+      />
     </Frame>
   </ScrollReveal>
 );
