@@ -10,22 +10,22 @@ export const PROGRAM_SLIDES: SlideItem[] = [
   {
     webp: "/images/program/dish-1.webp",
     jpg: "/images/program/dish-1.jpg",
-    alt: "Tôm tẩm bột xù xẻ bướm chiên giòn Mekong Meris",
+    alt: "Tôm xẻ bướm tẩm bột dừa Mekong Meris",
   },
   {
     webp: "/images/program/dish-2.webp",
     jpg: "/images/program/dish-2.jpg",
-    alt: "Xiên tôm nướng que và sốt mắm ớt Mekong Meris",
+    alt: "Sashimi cá rô phi nước lợ Mekong Meris",
   },
   {
     webp: "/images/program/dish-3.webp",
     jpg: "/images/program/dish-3.jpg",
-    alt: "Tôm chiên xù bắp cải và sốt chấm Mekong Meris",
+    alt: "Bánh tôm giòn rụm Mekong Meris",
   },
   {
     webp: "/images/program/dish-4.webp",
     jpg: "/images/program/dish-4.jpg",
-    alt: "Phi lê chiên giòn và khoai tây Mekong Meris",
+    alt: "Cá tẩm bột chiên giòn Mekong Meris",
   },
 ];
 

@@ -994,7 +994,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 3;
-  max-height: 350px;
+  max-height: 450px;
   overflow: hidden;
   border-radius: 16px;
   box-shadow: 0 10px 28px rgba(0, 39, 130, 0.06);
