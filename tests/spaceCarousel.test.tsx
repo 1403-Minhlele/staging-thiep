@@ -12,14 +12,14 @@ describe('SpaceCarousel component', () => {
     vi.unstubAllGlobals();
   });
 
-  it('renders all 3 slides and dot indicators', () => {
+  it('renders all 11 slides and dot indicators', () => {
     render(<SpaceCarousel />);
     const images = screen.getAllByRole('img', { hidden: true });
-    // 3 slides + 1 clone = 4 img elements in the track
-    expect(images.length).toBe(4);
+    // 11 slides + 1 clone = 12 img elements in the track
+    expect(images.length).toBe(12);
 
     const tabs = screen.getAllByRole('tab');
-    expect(tabs.length).toBe(3);
+    expect(tabs.length).toBe(11);
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
     expect(tabs[1]).toHaveAttribute('aria-selected', 'false');
     expect(tabs[2]).toHaveAttribute('aria-selected', 'false');
@@ -43,17 +43,19 @@ describe('SpaceCarousel component', () => {
     expect(tabs[1]).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByText(SPACE_SLIDES[1].title)).toBeInTheDocument();
 
-    // Advance 2000ms -> slide 3 (Showroom)
+    // Advance 2000ms -> slide 3
     act(() => {
       vi.advanceTimersByTime(2000);
     });
     expect(tabs[2]).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByText(SPACE_SLIDES[2].title)).toBeInTheDocument();
 
-    // Advance 2000ms -> clone slide (maps to dot 0)
-    act(() => {
-      vi.advanceTimersByTime(2000);
-    });
+    // Advance through remaining slides one by one to reach the clone slide (maps to dot 0)
+    for (let i = 2; i < SPACE_SLIDES.length; i++) {
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+    }
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
 
     // After transition duration (500ms), resets to index 0 smoothly

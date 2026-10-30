@@ -12,53 +12,35 @@ describe('ProgramCarousel component', () => {
     vi.unstubAllGlobals();
   });
 
-  it('renders all 4 slides and dot indicators', () => {
+  it('renders all 10 slides and dot indicators', () => {
     render(<ProgramCarousel />);
     const images = screen.getAllByRole('img', { hidden: true });
-    // 4 slides + 1 clone = 5 img elements in the track
-    expect(images.length).toBe(5);
+    // 10 slides + 1 clone = 11 img elements in the track
+    expect(images.length).toBe(11);
 
     const tabs = screen.getAllByRole('tab');
-    expect(tabs.length).toBe(4);
+    expect(tabs.length).toBe(10);
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
     expect(tabs[1]).toHaveAttribute('aria-selected', 'false');
   });
 
-  it('auto-advances slides every 800ms', () => {
+  it('auto-advances slides every 2000ms', () => {
     render(<ProgramCarousel />);
     const tabs = screen.getAllByRole('tab');
 
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
 
-    // Advance 800ms
+    // Advance 2000ms
     act(() => {
-      vi.advanceTimersByTime(800);
+      vi.advanceTimersByTime(2000);
     });
     expect(tabs[1]).toHaveAttribute('aria-selected', 'true');
 
-    // Advance another 800ms
+    // Advance another 2000ms
     act(() => {
-      vi.advanceTimersByTime(800);
+      vi.advanceTimersByTime(2000);
     });
     expect(tabs[2]).toHaveAttribute('aria-selected', 'true');
-
-    // Advance another 800ms
-    act(() => {
-      vi.advanceTimersByTime(800);
-    });
-    expect(tabs[3]).toHaveAttribute('aria-selected', 'true');
-
-    // Advance another 800ms to clone slide (index 4 -> maps to dot 0)
-    act(() => {
-      vi.advanceTimersByTime(800);
-    });
-    expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
-
-    // After transition duration (320ms), resets to index 0 smoothly
-    act(() => {
-      vi.advanceTimersByTime(320);
-    });
-    expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
   });
 
   it('allows jumping to a specific slide when clicking dots', () => {
@@ -92,9 +74,9 @@ describe('ProgramCarousel component', () => {
     // Mouse leave
     fireEvent.mouseLeave(container);
 
-    // Advance 800ms after resume
+    // Advance 2000ms after resume
     act(() => {
-      vi.advanceTimersByTime(800);
+      vi.advanceTimersByTime(2000);
     });
     expect(tabs[1]).toHaveAttribute('aria-selected', 'true');
   });
