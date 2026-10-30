@@ -667,7 +667,7 @@
 }
 
 .space-carousel-slide .space-img-wrap {
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 4 / 3;
   width: 100%;
   background: #ecefe6;
   overflow: hidden;

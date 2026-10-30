@@ -27,6 +27,36 @@ export const PROGRAM_SLIDES: SlideItem[] = [
     jpg: "/images/program/dish-4.jpg",
     alt: "Cá tẩm bột chiên giòn Mekong Meris",
   },
+  {
+    webp: "/images/program/dish-5.webp",
+    jpg: "/images/program/dish-5.jpg",
+    alt: "Tôm tempura chiên giòn Mekong Meris",
+  },
+  {
+    webp: "/images/program/dish-6.webp",
+    jpg: "/images/program/dish-6.jpg",
+    alt: "Tempura cá thanh giòn Mekong Meris",
+  },
+  {
+    webp: "/images/program/dish-7.webp",
+    jpg: "/images/program/dish-7.jpg",
+    alt: "Chả tôm viên đông lạnh Mekong Meris",
+  },
+  {
+    webp: "/images/program/dish-8.webp",
+    jpg: "/images/program/dish-8.jpg",
+    alt: "Chả cá viên đông lạnh Mekong Meris",
+  },
+  {
+    webp: "/images/program/dish-9.webp",
+    jpg: "/images/program/dish-9.jpg",
+    alt: "Xiên tôm nướng que Mekong Meris",
+  },
+  {
+    webp: "/images/program/dish-10.webp",
+    jpg: "/images/program/dish-10.jpg",
+    alt: "Bánh mì kẹp mini Burger Mekong Meris",
+  },
 ];
 
 // Display duration per slide requested by user: 800ms
